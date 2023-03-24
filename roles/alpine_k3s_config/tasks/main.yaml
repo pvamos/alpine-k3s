@@ -1,0 +1,210 @@
+---
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Set host variables for c1.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ c1_fqdn }}"
+    hostnamefromip: "{{ c1_hostname }}"
+    domainfromip: "{{ c1_domain }}"
+    ipv4addr: "{{ c1_ipv4addr }}"
+    ipv6addr: "{{ c1_ipv6addr }}"
+    ipv6mask: "{{ c1_ipv6mask }}"
+    ipv6_defaultgw: "{{ c1_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c1_ipv4addr
+
+- name: Set host variables for c2.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ c2_fqdn }}"
+    hostnamefromip: "{{ c2_hostname }}"
+    domainfromip: "{{ c2_domain }}"
+    ipv4addr: "{{ c2_ipv4addr }}"
+    ipv6addr: "{{ c2_ipv6addr }}"
+    ipv6mask: "{{ c2_ipv6mask }}"
+    ipv6_defaultgw: "{{ c2_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c2_ipv4addr
+
+- name: Set host variables for c3.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ c3_fqdn }}"
+    hostnamefromip: "{{ c3_hostname }}"
+    domainfromip: "{{ c3_domain }}"
+    ipv4addr: "{{ c3_ipv4addr }}"
+    ipv6addr: "{{ c3_ipv6addr }}"
+    ipv6mask: "{{ c3_ipv6mask }}"
+    ipv6_defaultgw: "{{ c3_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c3_ipv4addr
+
+- name: Set host variables for w1.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ w1_fqdn }}"
+    hostnamefromip: "{{ w1_hostname }}"
+    domainfromip: "{{ w1_domain }}"
+    ipv4addr: "{{ w1_ipv4addr }}"
+    ipv6addr: "{{ w1_ipv6addr }}"
+    ipv6mask: "{{ w1_ipv6mask }}"
+    ipv6_defaultgw: "{{ w1_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w1_ipv4addr
+
+- name: Set host variables for w2.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ w2_fqdn }}"
+    hostnamefromip: "{{ w2_hostname }}"
+    domainfromip: "{{ w2_domain }}"
+    ipv4addr: "{{ w2_ipv4addr }}"
+    ipv6addr: "{{ w2_ipv6addr }}"
+    ipv6mask: "{{ w2_ipv6mask }}"
+    ipv6_defaultgw: "{{ w2_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w2_ipv4addr
+
+- name: Set host variables for w3.pvamos.net
+  set_fact:
+    fqdnfromip: "{{ w3_fqdn }}"
+    hostnamefromip: "{{ w3_hostname }}"
+    domainfromip: "{{ w3_domain }}"
+    ipv4addr: "{{ w3_ipv4addr }}"
+    ipv6addr: "{{  w3_ipv6addr }}"
+    ipv6mask: "{{ w3_ipv6mask }}"
+    ipv6_defaultgw: "{{ w3_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w3_ipv4addr
+
+
+- name: Create the /etc/rancher/k3s directory if it does not exist
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: '0755'
+
+
+- name: Create /etc/rancher/k3s/config.yaml for control1
+  template:
+    src: templates/control1.config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+  when: inventory_hostname in groups.control1
+
+- name: Enable and start service k3s on control1
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: started
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 120
+
+
+- name: Create /etc/rancher/k3s/config.yaml for control2 and control3
+  template:
+    src: templates/control23.config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+  when: inventory_hostname in groups.control23
+
+- name: Enable and start service k3s on control2 and control3
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: started
+  when: inventory_hostname in groups.control23
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 120
+
+
+- name: Copy /var/lib/rancher/k3s/server/node-token from control1 to /home/p/alpine-k3s on ansible host
+  ansible.builtin.fetch:
+    src: /var/lib/rancher/k3s/server/node-token
+    dest: /home/p/alpine-k3s/
+    flat: true
+  when: inventory_hostname in groups.control1
+
+- name: Set variable k3s_node_token_from_control1 for workers
+  ansible.builtin.set_fact:
+    k3s_node_token_from_control1: "{{ lookup('file', '/home/p/alpine-k3s/node-token') }}"
+  when: inventory_hostname in groups.workers
+
+- name: Create /etc/rancher/k3s/config.yaml for workers
+  template:
+    src: templates/workers.config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+  when: inventory_hostname in groups.workers
+
+- name: Set K3S_EXEC to agent in /etc/conf.d/k3s for workers
+  ansible.builtin.lineinfile:
+    path: /etc/conf.d/k3s
+    regexp: '^K3S_EXEC="server"'
+    line: K3S_EXEC="agent"
+  when: inventory_hostname in groups.workers
+
+- name: Enable and start service k3s on workers
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: started
+  when: inventory_hostname in groups.workers
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 120
+
+
+- name: Set loadbalancer IP in /etc/rancher/k3s/k3s.yaml on controlplane nodes
+  ansible.builtin.lineinfile:
+    path: /etc/rancher/k3s/k3s.yaml
+    regexp: '^    server: https://0.0.0.0:6443'
+    line: "    server: https://{{ loadbalancer_ipv4 }}:6443"
+  when: inventory_hostname in groups.controlplane
+
+- name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/alpine-k3s on ansible host
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/p/alpine-k3s/
+    flat: true
+  when: inventory_hostname in groups.control1
+
+- name: Copy /home/p/alpine-k3s/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on workers
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/k3s.yaml
+    src: /home/p/alpine-k3s/k3s.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: inventory_hostname in groups.workers
+
+
+- name: Get kubectl get no
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
+  register: kubectl_getno_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get no output
+  ansible.builtin.debug:
+    var: kubectl_getno_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Get kubectl get pod
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+

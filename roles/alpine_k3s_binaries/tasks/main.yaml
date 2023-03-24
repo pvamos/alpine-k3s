@@ -1,0 +1,26 @@
+---
+
+# Alpine linux k3s binaries deployment
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Install apk packages cni-plugins iptables k3s k3s-openrc k3s-doc
+  community.general.apk:
+    name: cni-plugins,iptables,k3s,k3s-openrc,k3s-doc
+    update_cache: true
+    state: present
+
+- name: Create /etc/profile.d/cni.sh
+  copy:
+    dest: /etc/profile.d/cni.sh
+    content: |
+      #!/bin/sh
+      export PATH=$PATH:/usr/libexec/cni
+
+
+#    content: |
+#      #!/bin/sh
+#      export PATH=$PATH:/usr/share/cni-plugins/bin
+
+

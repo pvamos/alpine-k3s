@@ -1,0 +1,27 @@
+write-kubeconfig-mode: "0644"
+node-label:
+  - "foo=bar"
+  - "something=amazing"
+server: "https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }}"
+token: "{{ k3s_token  }}"
+node-name: "{{ hostnamefromip }}"
+bind-address: "0.0.0.0"
+https-listen-port: "{{ loadbalancer_node_port }}"
+advertise-address: "{{ loadbalancer_ipv4 }}"
+advertise-port: "{{ loadbalancer_port }}"
+tls-san:
+  - "{{ loadbalancer_ipv4 }}"
+  - "{{ c1_ipv4addr }}"
+  - "{{ c2_ipv4addr }}"
+  - "{{ c3_ipv4addr }}"
+  - "{{ loadbalancer_fqdn }}"
+  - "{{ c1_fqdn }}"
+  - "{{ c2_fqdn }}"
+  - "{{ c3_fqdn }}"
+cluster-cidr: "{{ cluster_cidr }}"
+service-cidr: "{{ service_cidr }}"
+service-node-port-range: "{{ service_node_port_range }}"
+cluster-dns: "{{ cluster_dns }}"
+cluster-domain: "{{ domainfromip }}"
+
+
