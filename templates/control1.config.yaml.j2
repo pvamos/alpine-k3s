@@ -1,7 +1,7 @@
 write-kubeconfig-mode: "0644"
 node-label:
-  - "foo=bar"
-  - "something=amazing"
+  - "ovh-instance-type=1-2-40"
+  - "cluster-node-role=control"
 cluster-init: true
 token: "{{ k3s_token  }}"
 node-name: "{{ hostnamefromip }}"

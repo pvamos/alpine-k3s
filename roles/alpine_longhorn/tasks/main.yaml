@@ -2,7 +2,7 @@
 
 # Alpine linux kubernetes Longhorn storage
 # configuring requirements:
-# https://longhorn.io/docs/1.4.0/deploy/install/#installation-requirements
+# https://longhorn.io/docs/1.4.1/deploy/install/#installation-requirements
 
 - name: Test connection with ping
   ansible.builtin.ping:
@@ -12,16 +12,14 @@
     name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq
     state: present
 
-- name: Set local.d script to 'mount --make-rshared /' on workers
-#  when: inventory_hostname in groups.workers
+- name: Set local.d script to 'mount --make-rshared /'
   copy:
     dest: /etc/local.d/mount-make-rshared.start
     content: |
       #!/bin/bash
       /bin/mount --make-rshared /
 
-- name: Execute /bin/mount --make-rshared / on workers
-#  when: inventory_hostname in groups.workers
+- name: Execute /bin/mount --make-rshared /
   ansible.builtin.command: /bin/mount --make-rshared /
 
 - name: Enable and start service iscsid

@@ -102,9 +102,9 @@
     state: started
   when: inventory_hostname in groups.control1
 
-- name: Pause for 120 seconds
+- name: Pause for 60 seconds
   ansible.builtin.pause:
-    seconds: 120
+    seconds: 60
 
 
 - name: Create /etc/rancher/k3s/config.yaml for control2 and control3
@@ -120,9 +120,9 @@
     state: started
   when: inventory_hostname in groups.control23
 
-- name: Pause for 120 seconds
+- name: Pause for 60 seconds
   ansible.builtin.pause:
-    seconds: 120
+    seconds: 60
 
 
 - name: Copy /var/lib/rancher/k3s/server/node-token from control1 to /home/p/alpine-k3s on ansible host
@@ -157,9 +157,9 @@
     state: started
   when: inventory_hostname in groups.workers
 
-- name: Pause for 120 seconds
+- name: Pause for 60 seconds
   ansible.builtin.pause:
-    seconds: 120
+    seconds: 60
 
 
 - name: Set loadbalancer IP in /etc/rancher/k3s/k3s.yaml on controlplane nodes
