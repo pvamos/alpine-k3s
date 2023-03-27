@@ -1,5 +1,0 @@
-/dev/sda1 /boot             ext4 rw,noatime 0 2
-/dev/sda2 /var/lib/longhorn ext4 rw,noatime 0 0
-/dev/sda3 /                 ext4 rw,noatime 0 1
-cgroup /sys/fs/cgroup cgroup defaults 0 0
-

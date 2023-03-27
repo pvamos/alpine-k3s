@@ -32,6 +32,13 @@
 - name: Modprobe br_netfilter
   command: /sbin/modprobe br_netfilter
 
+- name: Configure cgroups version 2 mode to mount cgroups
+  ansible.builtin.lineinfile:
+    path: /etc/rc.conf
+    state: present
+    insertafter: '^#rc_cgroup_mode="hybrid"'
+    line: rc_cgroup_mode="unified"
+
 - name: Create /etc/cgconfig.conf
   copy:
     dest: /etc/cgconfig.conf
@@ -46,18 +53,6 @@
         cpuset = /cgroup/cpuset;
         cpu = /cgroup/cpu;
       }
-
-- name: Create /etc/fstab for control nodes
-  when: "'controlplane' in group_names"
-  copy:
-    src:  files/fstab.control
-    dest: /etc/fstab
-
-- name: Create /etc/fstab for worker nodes
-  when: "'workers' in group_names"
-  copy:
-    src:  files/fstab.worker
-    dest: /etc/fstab
 
 - name: Modify /etc/update-extlinux.conf
   command: /bin/sed -i 's/default_kernel_opts="pax_nouderef quiet rootfstype=ext4"/default_kernel_opts="pax_nouderef quiet rootfstype=ext4 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"/g' /etc/update-extlinux.conf

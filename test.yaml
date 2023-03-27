@@ -1,7 +1,0 @@
----
-
-- name: Alpine linux preparations
-  hosts: workers:controlplane
-  gather_facts: true
-  roles:
-    - role: alpine_longhorn

@@ -36,7 +36,7 @@
 #  become: no
 #  delegate_to: 127.0.0.1
 #  ansible.builtin.command:
-#    cmd: /usr/bin/kubectl --kubeconfig /home/p/.kube/config apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.0/deploy/longhorn.yaml
+#    cmd: /usr/bin/kubectl --kubeconfig /home/p/.kube/config apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
 #  register: kubectl_apply_longhorn
 #  when: inventory_hostname in groups.control1
 
