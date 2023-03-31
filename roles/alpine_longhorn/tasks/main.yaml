@@ -7,9 +7,9 @@
 - name: Test connection with ping
   ansible.builtin.ping:
 
-- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq packages
+- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip packages
   community.general.apk:
-    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq
+    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip
     state: present
 
 - name: Set local.d script to 'mount --make-rshared /'
@@ -28,20 +28,114 @@
     enabled: yes
     state: started
 
+- name: Install pyyaml python package
+  ansible.builtin.pip:
+    name: pyyaml
 
-#- name: Execute kubectl apply -f longhorn.yaml
-#  remote_user: p
-#  become: no
-#  delegate_to: 127.0.0.1
-#  ansible.builtin.command:
-#    cmd: /usr/bin/kubectl --kubeconfig /home/p/.kube/config apply -f https://raw.githubusercontent.com/longhorn/longhorn/v1.4.1/deploy/longhorn.yaml
-#  register: kubectl_apply_longhorn
-#  when: inventory_hostname in groups.control1
+- name: Add the Longhorn Helm charts repository on control1
+  kubernetes.core.helm_repository:
+    name: longhorn
+    repo_url: https://charts.longhorn.io
+  when: inventory_hostname in groups.control1
 
-#- name: Print kubectl apply -f longhorn.yaml output
-#  ansible.builtin.debug:
-#    var: kubectl_apply_longhorn.stdout_lines
-#  when: inventory_hostname in groups.control1
+- name: Copy files/longhorn_values.yaml to /home/p/longhorn_values.yaml
+  copy:
+    src:  files/longhorn_values.yaml
+    dest: /home/p/longhorn_values.yaml
+    owner: root
+    group: root
+    mode: '0640'
+  when: inventory_hostname in groups.control1
 
+- name: Deploy Longhorn Helm chart v1.4.1 with values loaded from template
+  kubernetes.core.helm:
+    name: longhorn
+    chart_ref: longhorn/longhorn
+    chart_version: 1.4.1
+    create_namespace: true
+    release_namespace: longhorn-system
+    wait: true
+    update_repo_cache: true
+    values_files:
+      - /home/p/longhorn_values.yaml
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+  when: inventory_hostname in groups.control1
 
+- name: Get kubectl get no
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
+  register: kubectl_getno_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get no output
+  ansible.builtin.debug:
+    var: kubectl_getno_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Get kubectl get all -n longhorn-system
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get all -n longhorn-system -owide
+  register: get_all
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po output
+  ansible.builtin.debug:
+    var: get_all.stdout_lines
+  when: inventory_hostname in groups.control1
 

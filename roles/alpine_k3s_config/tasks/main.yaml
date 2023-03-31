@@ -176,6 +176,16 @@
     flat: true
   when: inventory_hostname in groups.control1
 
+- name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/.kube/config on ansible host
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /home/p/.kube/config
+    flat: true
+    owner: p
+    group: p
+    mode: '0600'
+  when: inventory_hostname in groups.control1
+
 - name: Copy /home/p/alpine-k3s/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on workers
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/k3s.yaml
@@ -197,13 +207,13 @@
     var: kubectl_getno_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Get kubectl get pod
+- name: Get kubectl get pod --all-namespaces
   ansible.builtin.command:
     cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
   register: get_pods
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl get po output
+- name: Print kubectl get po --all-namespaces output
   ansible.builtin.debug:
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
