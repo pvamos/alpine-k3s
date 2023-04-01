@@ -112,3 +112,13 @@ lb2_ipv6addr: 2001:41d0:701:1100::2701
 lb2_ipv6mask: /128
 lb2_ipv6_defaultgw: 2001:41d0:701:1100::1
 lb2_city: Frankfurt
+
+reg_fqdn: reg.frankfurt.pvamos.net
+reg_hostname: reg
+reg_domain: frankfurt.pvamos.net
+reg_ipv4addr: 141.95.16.197
+reg_ipv6addr: 2001:41d0:701:1100::42ae
+reg_ipv6mask: /128
+reg_ipv6_defaultgw: 2001:41d0:701:1100::1
+reg_city: Frankfurt
+

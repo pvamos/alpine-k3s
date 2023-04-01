@@ -18,3 +18,7 @@ worker3.frankfurt.pvamos.net
 [haproxy]
 #lb1.frankfurt.pvamos.net
 #lb2.frankfurt.pvamos.net
+
+[registry]
+#reg.frankfurt.pvamos.net
+
