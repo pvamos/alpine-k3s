@@ -15,6 +15,9 @@
 - name: Set local.d script to 'mount --make-rshared /'
   copy:
     dest: /etc/local.d/mount-make-rshared.start
+    owner: root
+    group: root
+    mode: '0740'
     content: |
       #!/bin/bash
       /bin/mount --make-rshared /
