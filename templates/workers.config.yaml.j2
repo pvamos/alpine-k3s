@@ -4,4 +4,6 @@ token: "{{ k3s_node_token_from_control1 }}"
 node-label:
   - "ovh-instance-type=2-4-80"
   - "cluster-node-role=worker"
+node-external-ip: "{{ ipv4addr }}"
+flannel-iface: "{{ flannel_interface }}"
 

@@ -41,6 +41,10 @@ service_cidr: "10.43.0.0/16"
 service_node_port_range: "30000-32767"
 cluster_dns: "10.43.0.10"
 
+flannel_backend: wireguard-native
+egress_selector_mode: cluster
+flannel_interface: eth0
+
 c1_fqdn: control1.frankfurt.pvamos.net
 c1_hostname: control1
 c1_domain: frankfurt.pvamos.net

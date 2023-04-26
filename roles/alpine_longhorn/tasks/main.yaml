@@ -7,9 +7,9 @@
 - name: Test connection with ping
   ansible.builtin.ping:
 
-- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip packages
+- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools packages
   community.general.apk:
-    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip
+    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools
     state: present
 
 - name: Set local.d script to 'mount --make-rshared /'
@@ -17,7 +17,7 @@
     dest: /etc/local.d/mount-make-rshared.start
     owner: root
     group: root
-    mode: '0740'
+    mode: '0751'
     content: |
       #!/bin/bash
       /bin/mount --make-rshared /

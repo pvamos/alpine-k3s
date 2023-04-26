@@ -23,5 +23,9 @@ service-cidr: "{{ service_cidr }}"
 service-node-port-range: "{{ service_node_port_range }}"
 cluster-dns: "{{ cluster_dns }}"
 cluster-domain: "{{ domainfromip }}"
-
+node-external-ip: "{{ ipv4addr }}"
+flannel-backend: "{{ flannel_backend }}"
+flannel-external-ip: true
+egress-selector-mode: "{{ egress_selector_mode }}"
+flannel-iface: "{{ flannel_interface }}"
 
