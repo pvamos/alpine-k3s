@@ -153,3 +153,24 @@
     var: get_all.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Set local-path storageclass non-default
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+  register: default_storageclass
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get set local-path storageclass non-default output
+  ansible.builtin.debug:
+    var: default_storageclass.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Get kubectl get storageclass
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get storageclass
+  register: get_storageclass
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get storageclass output
+  ansible.builtin.debug:
+    var: get_storageclass.stdout_lines
+  when: inventory_hostname in groups.control1
