@@ -155,7 +155,8 @@
 
 - name: Set local-path storageclass non-default
   ansible.builtin.command:
-    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+    cmd: |
+      /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
   register: default_storageclass
   when: inventory_hostname in groups.control1
 
