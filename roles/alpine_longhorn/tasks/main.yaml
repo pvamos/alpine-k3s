@@ -7,9 +7,9 @@
 - name: Test connection with ping
   ansible.builtin.ping:
 
-- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools packages
+- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml packages
   community.general.apk:
-    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools
+    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml
     state: present
 
 - name: Set local.d script to 'mount --make-rshared /'
@@ -31,9 +31,9 @@
     enabled: yes
     state: started
 
-- name: Install pyyaml python package
-  ansible.builtin.pip:
-    name: pyyaml
+#- name: Install pyyaml python package
+#  ansible.builtin.pip:
+#    name: pyyaml
 
 - name: Run kubectl label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true
   ansible.builtin.command:

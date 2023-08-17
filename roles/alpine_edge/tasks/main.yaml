@@ -1,13 +1,13 @@
 ---
 
-# Alpine linux latest stable APK repo configuration
+# Alpine linux edge and testing APK repo configuration
 
 - name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
   ping:
 
-- name: Set /etc/apk/repositories to latest-stable/main, latest-stable/community and #edge/testing
+- name: Set /etc/apk/repositories to edge/main, edge/community and edge/testing
   copy:
-    src:  files/repositories.latest
+    src:  files/repositories.edge
     dest: /etc/apk/repositories
 
 - name: Upgrade all installed apk packages to the latest versions

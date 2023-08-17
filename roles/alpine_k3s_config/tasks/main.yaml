@@ -161,13 +161,12 @@
   ansible.builtin.pause:
     seconds: 60
 
-
-- name: Set loadbalancer IP in /etc/rancher/k3s/k3s.yaml on controlplane nodes
+- name: Set loadbalancer IP in /etc/rancher/k3s/k3s.yaml on control1 node
   ansible.builtin.lineinfile:
     path: /etc/rancher/k3s/k3s.yaml
     regexp: '^    server: https://0.0.0.0:6443'
     line: "    server: https://{{ loadbalancer_ipv4 }}:6443"
-  when: inventory_hostname in groups.controlplane
+  when: inventory_hostname in groups.control1
 
 - name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/alpine-k3s on ansible host
   ansible.builtin.fetch:
@@ -186,15 +185,23 @@
     mode: '0600'
   when: inventory_hostname in groups.control1
 
-- name: Copy /home/p/alpine-k3s/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on workers
+- name: Copy the same /home/p/alpine-k3s/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on all nodes
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/k3s.yaml
     src: /home/p/alpine-k3s/k3s.yaml
     owner: root
     group: root
     mode: '0644'
-  when: inventory_hostname in groups.workers
 
+- name: Restart service k3s on all nodes
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: restarted
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 120
 
 - name: Get kubectl get no
   ansible.builtin.command:

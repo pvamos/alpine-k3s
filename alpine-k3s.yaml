@@ -5,6 +5,7 @@
   gather_facts: true
   roles:
     - role: alpine_latest
+#    - role: alpine_edge
     - role: alpine_kernelparams
     - role: alpine_k3s_binaries
     - role: alpine_k3s_config
