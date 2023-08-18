@@ -65,7 +65,7 @@
   kubernetes.core.helm:
     name: longhorn
     chart_ref: longhorn/longhorn
-    chart_version: 1.4.1
+    chart_version: 1.5.1
     create_namespace: true
     release_namespace: longhorn-system
     wait: true
