@@ -148,7 +148,7 @@
   register: get_all
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl get po output
+- name: Print kubectl get all -n longhorn-system output
   ansible.builtin.debug:
     var: get_all.stdout_lines
   when: inventory_hostname in groups.control1
