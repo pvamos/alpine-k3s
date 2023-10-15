@@ -227,3 +227,14 @@
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Set control-plane NoSchedule taint for control1 control2 control3
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes control1 control2 control3 'node-role.kubernetes.io/control-plane:NoSchedule'
+  register: kubectl_taint_control_output
+  when: inventory_hostname in groups.control1
+
+- name: Print control-plane NoSchedule taint for control1 control2 control3 output
+  ansible.builtin.debug:
+    var: kubectl_taint_control_output.stdout_lines
+  when: inventory_hostname in groups.control1
+

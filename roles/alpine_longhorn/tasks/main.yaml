@@ -61,7 +61,7 @@
     mode: '0640'
   when: inventory_hostname in groups.control1
 
-- name: Deploy Longhorn Helm chart v1.4.1 with values loaded from template
+- name: Deploy Longhorn Helm chart v1.5.1 with values loaded from template
   kubernetes.core.helm:
     name: longhorn
     chart_ref: longhorn/longhorn

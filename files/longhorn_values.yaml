@@ -215,13 +215,23 @@ longhornDriver:
 longhornUI:
   replicas: 2
   priorityClass: ~
-  tolerations: []
+#  tolerations: []
+  tolerations:
   ## If you want to set tolerations for Longhorn UI Deployment, delete the `[]` in the line above
   ## and uncomment this example block
   # - key: "key"
   #   operator: "Equal"
   #   value: "value"
   #   effect: "NoSchedule"
+    - key: CriticalAddonsOnly
+      operator: Exists
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/master
+      operator: Exists
+      effect: NoSchedule
   nodeSelector: {}
   ## If you want to set node selector for Longhorn UI Deployment, delete the `{}` in the line above
   ## and uncomment this example block
