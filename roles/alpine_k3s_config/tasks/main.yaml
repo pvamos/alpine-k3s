@@ -3,7 +3,8 @@
 - name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
   ping:
 
-- name: Set host variables for c1.pvamos.net
+
+- name: Set host variables for control1.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ c1_fqdn }}"
     hostnamefromip: "{{ c1_hostname }}"
@@ -16,7 +17,7 @@
     city: "{{ c1_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c1_ipv4addr
 
-- name: Set host variables for c2.pvamos.net
+- name: Set host variables for control2.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ c2_fqdn }}"
     hostnamefromip: "{{ c2_hostname }}"
@@ -29,7 +30,7 @@
     city: "{{ c2_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c2_ipv4addr
 
-- name: Set host variables for c3.pvamos.net
+- name: Set host variables for control3.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ c3_fqdn }}"
     hostnamefromip: "{{ c3_hostname }}"
@@ -42,7 +43,166 @@
     city: "{{ c3_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c3_ipv4addr
 
-- name: Set host variables for w1.pvamos.net
+
+- name: Set host variables for ingress1.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ i1_fqdn }}"
+    hostnamefromip: "{{ i1_hostname }}"
+    domainfromip: "{{ i1_domain }}"
+    ipv4addr: "{{ i1_ipv4addr }}"
+    ipv6addr: "{{ i1_ipv6addr }}"
+    ipv6mask: "{{ i1_ipv6mask }}"
+    ipv6_defaultgw: "{{ i1_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ i1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == i1_ipv4addr
+
+- name: Set host variables for ingress2.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ i2_fqdn }}"
+    hostnamefromip: "{{ i2_hostname }}"
+    domainfromip: "{{ i2_domain }}"
+    ipv4addr: "{{ i2_ipv4addr }}"
+    ipv6addr: "{{ i2_ipv6addr }}"
+    ipv6mask: "{{ i2_ipv6mask }}"
+    ipv6_defaultgw: "{{ i2_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ i2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == i2_ipv4addr
+
+- name: Set host variables for ingress3.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ i3_fqdn }}"
+    hostnamefromip: "{{ i3_hostname }}"
+    domainfromip: "{{ i3_domain }}"
+    ipv4addr: "{{ i3_ipv4addr }}"
+    ipv6addr: "{{ i3_ipv6addr }}"
+    ipv6mask: "{{ i3_ipv6mask }}"
+    ipv6_defaultgw: "{{ i3_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ i3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == i3_ipv4addr
+
+
+- name: Set host variables for storage1.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s1_fqdn }}"
+    hostnamefromip: "{{ s1_hostname }}"
+    domainfromip: "{{ s1_domain }}"
+    ipv4addr: "{{ s1_ipv4addr }}"
+    ipv6addr: "{{ s1_ipv6addr }}"
+    ipv6mask: "{{ s1_ipv6mask }}"
+    ipv6_defaultgw: "{{ s1_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s1_ipv4addr
+
+- name: Set host variables for storage2.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s2_fqdn }}"
+    hostnamefromip: "{{ s2_hostname }}"
+    domainfromip: "{{ s2_domain }}"
+    ipv4addr: "{{ s2_ipv4addr }}"
+    ipv6addr: "{{ s2_ipv6addr }}"
+    ipv6mask: "{{ s2_ipv6mask }}"
+    ipv6_defaultgw: "{{ s2_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s2_ipv4addr
+
+- name: Set host variables for storage3.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s3_fqdn }}"
+    hostnamefromip: "{{ s3_hostname }}"
+    domainfromip: "{{ s3_domain }}"
+    ipv4addr: "{{ s3_ipv4addr }}"
+    ipv6addr: "{{ s3_ipv6addr }}"
+    ipv6mask: "{{ s3_ipv6mask }}"
+    ipv6_defaultgw: "{{ s3_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s3_ipv4addr
+
+- name: Set host variables for storage4.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s4_fqdn }}"
+    hostnamefromip: "{{ s4_hostname }}"
+    domainfromip: "{{ s4_domain }}"
+    ipv4addr: "{{ s4_ipv4addr }}"
+    ipv6addr: "{{ s4_ipv6addr }}"
+    ipv6mask: "{{ s4_ipv6mask }}"
+    ipv6_defaultgw: "{{ s4_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s4_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s4_ipv4addr
+
+- name: Set host variables for storage5.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s5_fqdn }}"
+    hostnamefromip: "{{ s5_hostname }}"
+    domainfromip: "{{ s5_domain }}"
+    ipv4addr: "{{ s5_ipv4addr }}"
+    ipv6addr: "{{ s5_ipv6addr }}"
+    ipv6mask: "{{ s5_ipv6mask }}"
+    ipv6_defaultgw: "{{ s5_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s5_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s5_ipv4addr
+
+- name: Set host variables for storage6.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s6_fqdn }}"
+    hostnamefromip: "{{ s6_hostname }}"
+    domainfromip: "{{ s6_domain }}"
+    ipv4addr: "{{ s6_ipv4addr }}"
+    ipv6addr: "{{ s6_ipv6addr }}"
+    ipv6mask: "{{ s6_ipv6mask }}"
+    ipv6_defaultgw: "{{ s6_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s6_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s6_ipv4addr
+
+- name: Set host variables for storage7.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s7_fqdn }}"
+    hostnamefromip: "{{ s7_hostname }}"
+    domainfromip: "{{ s7_domain }}"
+    ipv4addr: "{{ s7_ipv4addr }}"
+    ipv6addr: "{{ s7_ipv6addr }}"
+    ipv6mask: "{{ s7_ipv6mask }}"
+    ipv6_defaultgw: "{{ s7_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s7_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s7_ipv4addr
+
+- name: Set host variables for storage8.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s8_fqdn }}"
+    hostnamefromip: "{{ s8_hostname }}"
+    domainfromip: "{{ s8_domain }}"
+    ipv4addr: "{{ s8_ipv4addr }}"
+    ipv6addr: "{{ s8_ipv6addr }}"
+    ipv6mask: "{{ s8_ipv6mask }}"
+    ipv6_defaultgw: "{{ s8_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s8_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s8_ipv4addr
+
+- name: Set host variables for storage9.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ s9_fqdn }}"
+    hostnamefromip: "{{ s9_hostname }}"
+    domainfromip: "{{ s9_domain }}"
+    ipv4addr: "{{ s9_ipv4addr }}"
+    ipv6addr: "{{ s9_ipv6addr }}"
+    ipv6mask: "{{ s9_ipv6mask }}"
+    ipv6_defaultgw: "{{ s9_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ s9_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == s9_ipv4addr
+
+
+- name: Set host variables for worker1.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ w1_fqdn }}"
     hostnamefromip: "{{ w1_hostname }}"
@@ -55,7 +215,7 @@
     city: "{{ w1_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w1_ipv4addr
 
-- name: Set host variables for w2.pvamos.net
+- name: Set host variables for worker2.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ w2_fqdn }}"
     hostnamefromip: "{{ w2_hostname }}"
@@ -68,7 +228,7 @@
     city: "{{ w2_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w2_ipv4addr
 
-- name: Set host variables for w3.pvamos.net
+- name: Set host variables for worker3.frankfurt.envsensor.net
   set_fact:
     fqdnfromip: "{{ w3_fqdn }}"
     hostnamefromip: "{{ w3_hostname }}"
@@ -80,6 +240,162 @@
     macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
     city: "{{ w3_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w3_ipv4addr
+
+- name: Set host variables for worker4.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w4_fqdn }}"
+    hostnamefromip: "{{ w4_hostname }}"
+    domainfromip: "{{ w4_domain }}"
+    ipv4addr: "{{ w4_ipv4addr }}"
+    ipv6addr: "{{ w4_ipv6addr }}"
+    ipv6mask: "{{ w4_ipv6mask }}"
+    ipv6_defaultgw: "{{ w4_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w4_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w4_ipv4addr
+
+- name: Set host variables for worker1.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w5_fqdn }}"
+    hostnamefromip: "{{ w5_hostname }}"
+    domainfromip: "{{ w5_domain }}"
+    ipv4addr: "{{ w5_ipv4addr }}"
+    ipv6addr: "{{ w5_ipv6addr }}"
+    ipv6mask: "{{ w5_ipv6mask }}"
+    ipv6_defaultgw: "{{ w5_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w5_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w5_ipv4addr
+
+- name: Set host variables for worker6.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w6_fqdn }}"
+    hostnamefromip: "{{ w6_hostname }}"
+    domainfromip: "{{ w6_domain }}"
+    ipv4addr: "{{ w6_ipv4addr }}"
+    ipv6addr: "{{ w6_ipv6addr }}"
+    ipv6mask: "{{ w6_ipv6mask }}"
+    ipv6_defaultgw: "{{ w6_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w6_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w6_ipv4addr
+
+- name: Set host variables for worker6.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w7_fqdn }}"
+    hostnamefromip: "{{ w7_hostname }}"
+    domainfromip: "{{ w7_domain }}"
+    ipv4addr: "{{ w7_ipv4addr }}"
+    ipv6addr: "{{ w7_ipv6addr }}"
+    ipv6mask: "{{ w7_ipv6mask }}"
+    ipv6_defaultgw: "{{ w7_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w7_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w7_ipv4addr
+
+- name: Set host variables for worker8.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w8_fqdn }}"
+    hostnamefromip: "{{ w8_hostname }}"
+    domainfromip: "{{ w8_domain }}"
+    ipv4addr: "{{ w8_ipv4addr }}"
+    ipv6addr: "{{ w8_ipv6addr }}"
+    ipv6mask: "{{ w8_ipv6mask }}"
+    ipv6_defaultgw: "{{ w8_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w8_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w8_ipv4addr
+
+- name: Set host variables for worker9.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w9_fqdn }}"
+    hostnamefromip: "{{ w9_hostname }}"
+    domainfromip: "{{ w9_domain }}"
+    ipv4addr: "{{ w9_ipv4addr }}"
+    ipv6addr: "{{ w9_ipv6addr }}"
+    ipv6mask: "{{ w9_ipv6mask }}"
+    ipv6_defaultgw: "{{ w9_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w9_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w9_ipv4addr
+
+- name: Set host variables for worker10.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w10_fqdn }}"
+    hostnamefromip: "{{ w10_hostname }}"
+    domainfromip: "{{ w10_domain }}"
+    ipv4addr: "{{ w10_ipv4addr }}"
+    ipv6addr: "{{ w10_ipv6addr }}"
+    ipv6mask: "{{ w10_ipv6mask }}"
+    ipv6_defaultgw: "{{ w10_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w10_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w10_ipv4addr
+
+- name: Set host variables for worker11.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w11_fqdn }}"
+    hostnamefromip: "{{ w11_hostname }}"
+    domainfromip: "{{ w11_domain }}"
+    ipv4addr: "{{ w11_ipv4addr }}"
+    ipv6addr: "{{ w11_ipv6addr }}"
+    ipv6mask: "{{ w11_ipv6mask }}"
+    ipv6_defaultgw: "{{ w11_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w11_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w11_ipv4addr
+
+- name: Set host variables for worker12.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w12_fqdn }}"
+    hostnamefromip: "{{ w12_hostname }}"
+    domainfromip: "{{ w12_domain }}"
+    ipv4addr: "{{ w12_ipv4addr }}"
+    ipv6addr: "{{ w12_ipv6addr }}"
+    ipv6mask: "{{ w12_ipv6mask }}"
+    ipv6_defaultgw: "{{ w12_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w12_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w12_ipv4addr
+
+- name: Set host variables for worker13.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w13_fqdn }}"
+    hostnamefromip: "{{ w13_hostname }}"
+    domainfromip: "{{ w13_domain }}"
+    ipv4addr: "{{ w13_ipv4addr }}"
+    ipv6addr: "{{ w13_ipv6addr }}"
+    ipv6mask: "{{ w13_ipv6mask }}"
+    ipv6_defaultgw: "{{ w13_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w13_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w13_ipv4addr
+
+- name: Set host variables for worker14.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w14_fqdn }}"
+    hostnamefromip: "{{ w14_hostname }}"
+    domainfromip: "{{ w14_domain }}"
+    ipv4addr: "{{ w14_ipv4addr }}"
+    ipv6addr: "{{ w14_ipv6addr }}"
+    ipv6mask: "{{ w14_ipv6mask }}"
+    ipv6_defaultgw: "{{ w14_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w14_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w14_ipv4addr
+
+- name: Set host variables for worker15.frankfurt.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w15_fqdn }}"
+    hostnamefromip: "{{ w15_hostname }}"
+    domainfromip: "{{ w15_domain }}"
+    ipv4addr: "{{ w15_ipv4addr }}"
+    ipv6addr: "{{ w15_ipv6addr }}"
+    ipv6mask: "{{ w15_ipv6mask }}"
+    ipv6_defaultgw: "{{ w15_ipv6_defaultgw }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w15_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w15_ipv4addr
 
 
 - name: Create the /etc/rancher/k3s directory if it does not exist
@@ -132,30 +448,44 @@
     flat: true
   when: inventory_hostname in groups.control1
 
-- name: Set variable k3s_node_token_from_control1 for workers
+- name: Set variable k3s_node_token_from_control1 for ingress, storage and worker nodes
   ansible.builtin.set_fact:
     k3s_node_token_from_control1: "{{ lookup('file', '/home/p/alpine-k3s/node-token') }}"
-  when: inventory_hostname in groups.workers
+  when: inventory_hostname in groups.ingress or inventory_hostname in groups.storage or inventory_hostname in groups.worker
 
-- name: Create /etc/rancher/k3s/config.yaml for workers
+
+- name: Create /etc/rancher/k3s/config.yaml for ingress
   template:
-    src: templates/workers.config.yaml.j2
+    src: templates/ingress.config.yaml.j2
     dest: /etc/rancher/k3s/config.yaml
-  when: inventory_hostname in groups.workers
+  when: inventory_hostname in groups.ingress
 
-- name: Set K3S_EXEC to agent in /etc/conf.d/k3s for workers
+- name: Create /etc/rancher/k3s/config.yaml for storage
+  template:
+    src: templates/storage.config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+  when: inventory_hostname in groups.storage
+
+- name: Create /etc/rancher/k3s/config.yaml for worker
+  template:
+    src: templates/worker.config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+  when: inventory_hostname in groups.worker
+
+
+- name: Set K3S_EXEC to agent in /etc/conf.d/k3s for ingress, storage and worker nodes
   ansible.builtin.lineinfile:
     path: /etc/conf.d/k3s
     regexp: '^K3S_EXEC="server"'
     line: K3S_EXEC="agent"
-  when: inventory_hostname in groups.workers
+  when: inventory_hostname in groups.ingress or inventory_hostname in groups.storage or inventory_hostname in groups.worker
 
-- name: Enable and start service k3s on workers
+- name: Enable and start service k3s on ingress, storage and worker nodes
   ansible.builtin.service:
     name: k3s
     enabled: yes
     state: started
-  when: inventory_hostname in groups.workers
+  when: inventory_hostname in groups.ingress or inventory_hostname in groups.storage or inventory_hostname in groups.worker
 
 - name: Pause for 60 seconds
   ansible.builtin.pause:
@@ -238,3 +568,35 @@
     var: kubectl_taint_control_output.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Set control-plane NoSchedule taint for ingress1 ingress2 ingress3
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes ingress1 ingress2 ingress3 'node-role.kubernetes.io/ingress:NoSchedule'
+  register: kubectl_taint_ingress_output
+  when: inventory_hostname in groups.ingress
+
+- name: Print control-plane NoSchedule taint for ingress1 ingress2 ingress3 output
+  ansible.builtin.debug:
+    var: kubectl_taint_ingress_output.stdout_lines
+  when: inventory_hostname in groups.ingress
+
+- name: Set control-plane NoSchedule taint for storage1 storage2 ... storage9
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 'node-role.kubernetes.io/storage:NoSchedule'
+  register: kubectl_taint_storage_output
+  when: inventory_hostname in groups.storage
+
+- name: Print control-plane NoSchedule taint for storage1 storage2 ... storage9
+  ansible.builtin.debug:
+    var: kubectl_taint_storage_output.stdout_lines
+  when: inventory_hostname in groups.storage
+
+- name: Get kubectl get no
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
+  register: kubectl_getno_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get no output
+  ansible.builtin.debug:
+    var: kubectl_getno_output.stdout_lines
+  when: inventory_hostname in groups.control1

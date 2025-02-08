@@ -1,24 +1,208 @@
 [controlplane]
-control1.frankfurt.pvamos.net
-control2.frankfurt.pvamos.net
-control3.frankfurt.pvamos.net
+control1.frankfurt.envsensor.net
+# vps-0ea12185.vps.ovh.net
+# 57.129.67.84
+# 2001:41d0:701:1100::265e
+# timeawe@gmail.com
+
+control2.frankfurt.envsensor.net
+# vps-06d1c850.vps.ovh.net
+# 162.19.230.212
+# 2001:41d0:701:1100::abfe
+# eszter.pall@gmail.com
+
+control3.frankfurt.envsensor.net
+# vps-51f31f74.vps.ovh.net
+# 57.129.62.21
+# 2001:41d0:701:1100::a6e2
+# fityusz@gmail.com
+
 
 [control1]
-control1.frankfurt.pvamos.net
+control1.frankfurt.envsensor.net
+# vps-0ea12185.vps.ovh.net
+# 57.129.67.84
+# 2001:41d0:701:1100::265e
+# timeawe@gmail.com
+
 
 [control23]
-control2.frankfurt.pvamos.net
-control3.frankfurt.pvamos.net
+control2.frankfurt.envsensor.net
+# vps-06d1c850.vps.ovh.net
+# 162.19.230.212
+# 2001:41d0:701:1100::abfe
+# eszter.pall@gmail.com
 
-[workers]
-worker1.frankfurt.pvamos.net
-worker2.frankfurt.pvamos.net
-worker3.frankfurt.pvamos.net
+control3.frankfurt.envsensor.net
+# vps-51f31f74.vps.ovh.net
+# 57.129.62.21
+# 2001:41d0:701:1100::a6e2
+# fityusz@gmail.com
 
-[haproxy]
-#lb1.frankfurt.pvamos.net
-#lb2.frankfurt.pvamos.net
 
-[registry]
-#reg.frankfurt.pvamos.net
+[ingress]
+ingress1.frankfurt.envsensor.net
+# vps-1aa26215.vps.ovh.net
+# 141.95.1.176
+# 2001:41d0:701:1100::aaef
+# timeawe@gmail.com
 
+ingress2.frankfurt.envsensor.net
+# vps-2fef096d.vps.ovh.net
+# 162.19.228.88
+# 2001:41d0:701:1100::7441
+# eszter.pall@gmail.com
+
+ingress3.frankfurt.envsensor.net
+# vps-5afae516.vps.ovh.net
+# 57.129.62.217
+# 2001:41d0:701:1100::9bc2
+# fityusz@gmail.com
+
+
+[storage]
+storage1.frankfurt.envsensor.net
+# vps-2b54acc0.vps.ovh.net
+# 51.195.46.177
+# 2001:41d0:701:1100::88ce
+# timeawe@gmail.com
+
+storage2.frankfurt.envsensor.net
+# vps-39b468cc.vps.ovh.net
+# 162.19.229.236
+# 2001:41d0:701:1100::ab42
+# eszter.pall@gmail.com
+
+storage3.frankfurt.envsensor.net
+# vps-5d67f06c.vps.ovh.net
+# 57.129.62.16
+# 2001:41d0:701:1100::a6e5
+# fityusz@gmail.com
+
+storage4.frankfurt.envsensor.net
+# vps-38831915.vps.ovh.net
+# 57.129.74.58
+# 2001:41d0:701:1100::aafb
+# timeawe@gmail.com
+
+storage5.frankfurt.envsensor.net
+# vps-601f09d7.vps.ovh.net
+# 162.19.229.36
+# 2001:41d0:701:1100::ab90
+# eszter.pall@gmail.com
+
+storage6.frankfurt.envsensor.net
+# vps-5fa90db4.vps.ovh.net
+# 57.129.62.19
+# 2001:41d0:701:1100::aceb
+# fityusz@gmail.com
+
+storage7.frankfurt.envsensor.net
+# vps-424425fa.vps.ovh.net 
+# 57.129.67.85
+# 2001:41d0:701:1100::aaea
+# timeawe@gmail.com
+
+storage8.frankfurt.envsensor.net
+# vps-639ad5ea.vps.ovh.net
+# 162.19.228.165
+# 2001:41d0:701:1100::ab41
+# eszter.pall@gmail.com
+
+storage9.frankfurt.envsensor.net
+# vps-89ed3062.vps.ovh.net
+# 57.129.62.51
+# 2001:41d0:701:1100::a732
+# fityusz@gmail.com
+
+
+[worker]
+worker1.frankfurt.envsensor.net
+# vps-5d521bcd.vps.ovh.net
+# 57.129.67.68
+# 2001:41d0:701:1100::aae5
+# timeawe@gmail.com
+
+worker2.frankfurt.envsensor.net
+# vps-64663ee9.vps.ovh.net
+# 162.19.229.210
+# 2001:41d0:701:1100::abb3
+# eszter.pall@gmail.com
+
+worker3.frankfurt.envsensor.net
+# vps-aa10fda5.vps.ovh.net
+# 162.19.230.236
+# 2001:41d0:701:1100::957b
+# fityusz@gmail.com
+
+worker4.frankfurt.envsensor.net
+# vps-76a13bf8.vps.ovh.net 
+# 162.19.226.228
+# 2001:41d0:701:1100::aace
+# timeawe@gmail.com
+ 
+worker5.frankfurt.envsensor.net
+# vps-73c73ea0.vps.ovh.net
+# 162.19.229.80
+# 2001:41d0:701:1100::ab94
+# eszter.pall@gmail.com
+
+worker6.frankfurt.envsensor.net
+# vps-b75b4fb8.vps.ovh.net
+# 162.19.230.146
+# 2001:41d0:701:1100::5c72
+# fityusz@gmail.com
+
+worker7.frankfurt.envsensor.net
+# vps-890c1574.vps.ovh.net
+# 57.129.74.166
+# 2001:41d0:701:1100::aada
+# timeawe@gmail.com
+
+worker8.frankfurt.envsensor.net
+# vps-a8ec997a.vps.ovh.net
+# 162.19.230.107
+# 2001:41d0:701:1100::ab56
+# eszter.pall@gmail.com
+
+worker9.frankfurt.envsensor.net
+# vps-b7b4f3d7.vps.ovh.net
+# 57.129.62.61
+# 2001:41d0:701:1100::4ae1
+# fityusz@gmail.com
+
+worker10.frankfurt.envsensor.net
+# vps-95251e60.vps.ovh.net
+# 141.95.1.155
+# 2001:41d0:701:1100::aad9
+# timeawe@gmail.com
+
+worker11.frankfurt.envsensor.net
+# vps-cd057611.vps.ovh.net
+# 162.19.230.74
+# 2001:41d0:701:1100::aba2
+# eszter.pall@gmail.com
+
+worker12.frankfurt.envsensor.net
+# vps-db9a4e3a.vps.ovh.net
+# 57.129.62.37
+# 2001:41d0:701:1100::8df
+# fityusz@gmail.com
+
+worker13.frankfurt.envsensor.net
+# vps-e70a58b3.vps.ovh.net
+# 162.19.228.235
+# 2001:41d0:701:1100::ab0c
+# timeawe@gmail.com
+
+worker14.frankfurt.envsensor.net
+# vps-e78653f4.vps.ovh.net
+# 162.19.230.105
+# 2001:41d0:701:1100::ab1d
+# eszter.pall@gmail.com
+
+worker15.frankfurt.envsensor.net
+# vps-ee9a0695.vps.ovh.net
+# 162.19.231.79
+# 2001:41d0:701:1100::72b1
+# fityusz@gmail.com

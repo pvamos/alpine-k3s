@@ -24,15 +24,16 @@ ansible_user_publickey: ~/.ssh/id_ed25519.pub
 dns1: 213.186.33.99
 dns2: 1.1.1.1
 dns3: 1.0.0.1
-dns_search: frankfurt.pvamos.net
+dns_search: frankfurt.envsensor.net
 
 vm_swappiness: 0
 vm_vfs_cache_pressure: 100
 
-loadbalancer_ipv4: 141.95.37.233
+
+loadbalancer_ipv4: 54.37.92.176
 loadbalancer_port: 6443
 loadbalancer_node_port: 6443
-loadbalancer_fqdn: lb.frankfurt.pvamos.net
+loadbalancer_fqdn: k8s.frankfurt.envsensor.net
 
 k3s_token: SECRET
 
@@ -41,88 +42,315 @@ service_cidr: "10.43.0.0/16"
 service_node_port_range: "30000-32767"
 cluster_dns: "10.43.0.10"
 
-flannel_backend: wireguard-native
+flannel_backend: vxlan
 egress_selector_mode: cluster
 flannel_interface: eth0
 
-c1_fqdn: control1.frankfurt.pvamos.net
-c1_hostname: control1
-c1_domain: frankfurt.pvamos.net
-c1_ipv4addr: 51.195.116.80
-c1_ipv6addr: 2001:41d0:701:1100::5901
-c1_ipv6mask: /128
-c1_ipv6_defaultgw: 2001:41d0:701:1100::1
-c1_city: Frankfurt
 
-c2_fqdn: control2.frankfurt.pvamos.net
-c2_hostname: control2
-c2_domain: frankfurt.pvamos.net
-c2_ipv4addr: 51.195.116.87
-c2_ipv6addr: 2001:41d0:701:1100::5c3f
-c2_ipv6mask: /128
-c2_ipv6_defaultgw: 2001:41d0:701:1100::1
-c2_city: Frankfurt
+reg_fqdn: reg.envsensor.net
+reg_hostname: reg
+reg_domain: envsensor.net
+reg_ipv4addr: 57.129.14.134
+reg_ipv6addr: 2001:41d0:701:1100::76b8
+reg_ipv6mask: /128
+reg_ipv6_defaultgw: 2001:41d0:701:1100::1
+reg_city: Frankfurt
 
-c3_fqdn: control3.frankfurt.pvamos.net
-c3_hostname: control3
-c3_domain: frankfurt.pvamos.net
-c3_ipv4addr: 51.195.117.170
-c3_ipv6addr: 2001:41d0:701:1100::7912
-c3_ipv6mask: /128
-c3_ipv6_defaultgw: 2001:41d0:701:1100::1
-c3_city: Frankfurt
+ci_fqdn: ci.envsensor.net
+ci_hostname: ci
+ci_domain: envsensor.net
+ci_ipv4addr: 141.94.203.237
+ci_ipv6addr: 2001:41d0:304:200::5402
+ci_ipv6mask: /128
+ci_ipv6_defaultgw: 2001:41d0:304:200::1
+ci_city: Frankfurt
 
-w1_fqdn: worker1.frankfurt.pvamos.net
-w1_hostname: worker1
-w1_domain: frankfurt.pvamos.net
-w1_ipv4addr: 51.195.116.254
-w1_ipv6addr: 2001:41d0:701:1100::5fa8
-w1_ipv6mask: /128
-w1_ipv6_defaultgw: 2001:41d0:701:1100::1
-w1_city: Frankfurt
-
-w2_fqdn: worker2.frankfurt.pvamos.net
-w2_hostname: worker2
-w2_domain: frankfurt.pvamos.net
-w2_ipv4addr: 51.195.118.45
-w2_ipv6addr: 2001:41d0:701:1100::5fa4
-w2_ipv6mask: /128
-w2_ipv6_defaultgw: 2001:41d0:701:1100::1
-w2_city: Frankfurt
-
-w3_fqdn: worker3.frankfurt.pvamos.net
-w3_hostname: worker3
-w3_domain: frankfurt.pvamos.net
-w3_ipv4addr: 51.195.119.241
-w3_ipv6addr: 2001:41d0:701:1100::1996
-w3_ipv6mask: /128
-w3_ipv6_defaultgw: 2001:41d0:701:1100::1
-w3_city: Frankfurt
-
-lb1_fqdn: lb1.frankfurt.pvamos.net
+lb1_fqdn: lb1.frankfurt.envsensor.net
 lb1_hostname: lb1
-lb1_domain: frankfurt.pvamos.net
-lb1_ipv4addr: 51.195.45.52
-lb1_ipv6addr: 2001:41d0:701:1100::1611
+lb1_domain: frankfurt.envsensor.net
+lb1_ipv4addr: 162.19.154.131
+lb1_ipv6addr: 2001:41d0:701:1100::a21f
 lb1_ipv6mask: /128
 lb1_ipv6_defaultgw: 2001:41d0:701:1100::1
 lb1_city: Frankfurt
 
-lb2_fqdn: lb2.frankfurt.pvamos.net
+lb2_fqdn: lb2.frankfurt.envsensor.net
 lb2_hostname: lb2
-lb2_domain: frankfurt.pvamos.net
-lb2_ipv4addr: 51.89.23.76
-lb2_ipv6addr: 2001:41d0:701:1100::2701
+lb2_domain: frankfurt.envsensor.net
+lb2_ipv4addr: 135.125.161.144
+lb2_ipv6addr: 2001:41d0:701:1100::3d4d
 lb2_ipv6mask: /128
 lb2_ipv6_defaultgw: 2001:41d0:701:1100::1
 lb2_city: Frankfurt
 
-reg_fqdn: reg.frankfurt.pvamos.net
-reg_hostname: reg
-reg_domain: frankfurt.pvamos.net
-reg_ipv4addr: 51.68.188.7
-reg_ipv6addr: 2001:41d0:701:1100::2735
-reg_ipv6mask: /128
-reg_ipv6_defaultgw: 2001:41d0:701:1100::1
-reg_city: Frankfurt
+c1_fqdn: control1.frankfurt.envsensor.net
+c1_hostname: control1
+c1_domain: frankfurt.envsensor.net
+c1_ipv4addr: 57.129.67.84
+c1_ipv6addr: 2001:41d0:701:1100::265e
+c1_ipv6mask: /128
+c1_ipv6_defaultgw: 2001:41d0:701:1100::1
+c1_city: Frankfurt
+
+c2_fqdn: control2.frankfurt.envsensor.net
+c2_hostname: control2
+c2_domain: frankfurt.envsensor.net
+c2_ipv4addr: 162.19.230.212
+c2_ipv6addr: 2001:41d0:701:1100::abfe
+c2_ipv6mask: /128
+c2_ipv6_defaultgw: 2001:41d0:701:1100::1
+c2_city: Frankfurt
+
+c3_fqdn: control3.frankfurt.envsensor.net
+c3_hostname: control3
+c3_domain: frankfurt.envsensor.net
+c3_ipv4addr: 57.129.62.21
+c3_ipv6addr: 2001:41d0:701:1100::a6e2
+c3_ipv6mask: /128
+c3_ipv6_defaultgw: 2001:41d0:701:1100::1
+c3_city: Frankfurt
+
+i1_fqdn: ingress1.frankfurt.envsensor.net
+i1_hostname: ingress1
+i1_domain: frankfurt.envsensor.net
+i1_ipv4addr: 141.95.1.176
+i1_ipv6addr: 2001:41d0:701:1100::aaef
+i1_ipv6mask: /128
+i1_ipv6_defaultgw: 2001:41d0:701:1100::1
+i1_city: Frankfurt
+
+i2_fqdn: ingress2.frankfurt.envsensor.net
+i2_hostname: ingress2
+i2_domain: frankfurt.envsensor.net
+i2_ipv4addr: 162.19.228.88
+i2_ipv6addr: 2001:41d0:701:1100::7441
+i2_ipv6mask: /128
+i2_ipv6_defaultgw: 2001:41d0:701:1100::1
+i2_city: Frankfurt
+
+i3_fqdn: ingress3.frankfurt.envsensor.net
+i3_hostname: ingress3
+i3_domain: frankfurt.envsensor.net
+i3_ipv4addr: 57.129.62.217
+i3_ipv6addr: 2001:41d0:701:1100::9bc2
+i3_ipv6mask: /128
+i3_ipv6_defaultgw: 2001:41d0:701:1100::1
+i3_city: Frankfurt
+
+s1_fqdn: storage1.frankfurt.envsensor.net
+s1_hostname: storage1
+s1_domain: frankfurt.envsensor.net
+s1_ipv4addr: 51.195.46.177
+s1_ipv6addr: 2001:41d0:701:1100::88ce
+s1_ipv6mask: /128
+s1_ipv6_defaultgw: 2001:41d0:701:1100::1
+s1_city: Frankfurt
+
+s2_fqdn: storage2.frankfurt.envsensor.net
+s2_hostname: storage2
+s2_domain: frankfurt.envsensor.net
+s2_ipv4addr: 162.19.229.236
+s2_ipv6addr: 2001:41d0:701:1100::ab42
+s2_ipv6mask: /128
+s2_ipv6_defaultgw: 2001:41d0:701:1100::1
+s2_city: Frankfurt
+
+s3_fqdn: storage3.frankfurt.envsensor.net
+s3_hostname: storage3
+s3_domain: frankfurt.envsensor.net
+s3_ipv4addr: 57.129.62.16
+s3_ipv6addr: 2001:41d0:701:1100::a6e5
+s3_ipv6mask: /128
+s3_ipv6_defaultgw: 2001:41d0:701:1100::1
+s3_city: Frankfurt
+
+s4_fqdn: storage4.frankfurt.envsensor.net
+s4_hostname: storage4
+s4_domain: frankfurt.envsensor.net
+s4_ipv4addr: 57.129.74.58
+s4_ipv6addr: 2001:41d0:701:1100::aafb
+s4_ipv6mask: /128
+s4_ipv6_defaultgw: 2001:41d0:701:1100::1
+s4_city: Frankfurt
+
+s5_fqdn: storage5.frankfurt.envsensor.net
+s5_hostname: storage5
+s5_domain: frankfurt.envsensor.net
+s5_ipv4addr: 162.19.229.36
+s5_ipv6addr: 2001:41d0:701:1100::ab90
+s5_ipv6mask: /128
+s5_ipv6_defaultgw: 2001:41d0:701:1100::1
+s5_city: Frankfurt
+
+s6_fqdn: storage6.frankfurt.envsensor.net
+s6_hostname: storage6
+s6_domain: frankfurt.envsensor.net
+s6_ipv4addr: 57.129.62.19
+s6_ipv6addr: 2001:41d0:701:1100::aceb
+s6_ipv6mask: /128
+s6_ipv6_defaultgw: 2001:41d0:701:1100::1
+s6_city: Frankfurt
+
+s7_fqdn: storage7.frankfurt.envsensor.net
+s7_hostname: storage7
+s7_domain: frankfurt.envsensor.net
+s7_ipv4addr: 57.129.67.85
+s7_ipv6addr: 2001:41d0:701:1100::aaea
+s7_ipv6mask: /128
+s7_ipv6_defaultgw: 2001:41d0:701:1100::1
+s7_city: Frankfurt
+
+s8_fqdn: storage8.frankfurt.envsensor.net
+s8_hostname: storage8
+s8_domain: frankfurt.envsensor.net
+s8_ipv4addr: 162.19.228.165
+s8_ipv6addr: 2001:41d0:701:1100::ab41
+s8_ipv6mask: /128
+s8_ipv6_defaultgw: 2001:41d0:701:1100::1
+s8_city: Frankfurt
+
+s9_fqdn: storage9.frankfurt.envsensor.net
+s9_hostname: storage9
+s9_domain: frankfurt.envsensor.net
+s9_ipv4addr: 57.129.62.51
+s9_ipv6addr: 2001:41d0:701:1100::a732
+s9_ipv6mask: /128
+s9_ipv6_defaultgw: 2001:41d0:701:1100::1
+s9_city: Frankfurt
+
+w1_fqdn: worker1.frankfurt.envsensor.net
+w1_hostname: worker1
+w1_domain: frankfurt.envsensor.net
+w1_ipv4addr: 57.129.67.68
+w1_ipv6addr: 2001:41d0:701:1100::aae5
+w1_ipv6mask: /128
+w1_ipv6_defaultgw: 2001:41d0:701:1100::1
+w1_city: Frankfurt
+
+w2_fqdn: worker2.frankfurt.envsensor.net
+w2_hostname: worker2
+w2_domain: frankfurt.envsensor.net
+w2_ipv4addr: 162.19.229.210
+w2_ipv6addr: 2001:41d0:701:1100::abb3
+w2_ipv6mask: /128
+w2_ipv6_defaultgw: 2001:41d0:701:1100::1
+w2_city: Frankfurt
+
+w3_fqdn: worker3.frankfurt.envsensor.net
+w3_hostname: worker3
+w3_domain: frankfurt.envsensor.net
+w3_ipv4addr: 162.19.230.236
+w3_ipv6addr: 2001:41d0:701:1100::957b
+w3_ipv6mask: /128
+w3_ipv6_defaultgw: 2001:41d0:701:1100::1
+w3_city: Frankfurt
+
+w4_fqdn: worker4.frankfurt.envsensor.net
+w4_hostname: worker4
+w4_domain: frankfurt.envsensor.net
+w4_ipv4addr: 162.19.226.228
+w4_ipv6addr: 2001:41d0:701:1100::aace
+w4_ipv6mask: /128
+w4_ipv6_defaultgw: 2001:41d0:701:1100::1
+w4_city: Frankfurt
+
+w5_fqdn: worker5.frankfurt.envsensor.net
+w5_hostname: worker5
+w5_domain: frankfurt.envsensor.net
+w5_ipv4addr: 162.19.229.80
+w5_ipv6addr: 2001:41d0:701:1100::ab94
+w5_ipv6mask: /128
+w5_ipv6_defaultgw: 2001:41d0:701:1100::1
+w5_city: Frankfurt
+
+w6_fqdn: worker6.frankfurt.envsensor.net
+w6_hostname: worker6
+w6_domain: frankfurt.envsensor.net
+w6_ipv4addr: 162.19.230.146
+w6_ipv6addr: 2001:41d0:701:1100::5c72
+w6_ipv6mask: /128
+w6_ipv6_defaultgw: 2001:41d0:701:1100::1
+w6_city: Frankfurt
+
+w7_fqdn: worker7.frankfurt.envsensor.net
+w7_hostname: worker7
+w7_domain: frankfurt.envsensor.net
+w7_ipv4addr: 57.129.74.166
+w7_ipv6addr: 2001:41d0:701:1100::aada
+w7_ipv6mask: /128
+w7_ipv6_defaultgw: 2001:41d0:701:1100::1
+w7_city: Frankfurt
+
+w8_fqdn: worker8.frankfurt.envsensor.net
+w8_hostname: worker8
+w8_domain: frankfurt.envsensor.net
+w8_ipv4addr: 162.19.230.107
+w8_ipv6addr: 2001:41d0:701:1100::ab56
+w8_ipv6mask: /128
+w8_ipv6_defaultgw: 2001:41d0:701:1100::1
+w8_city: Frankfurt
+
+w9_fqdn: worker9.frankfurt.envsensor.net
+w9_hostname: worker9
+w9_domain: frankfurt.envsensor.net
+w9_ipv4addr: 57.129.62.61
+w9_ipv6addr: 2001:41d0:701:1100::4ae1
+w9_ipv6mask: /128
+w9_ipv6_defaultgw: 2001:41d0:701:1100::1
+w9_city: Frankfurt
+
+w10_fqdn: worker10.frankfurt.envsensor.net
+w10_hostname: worker10
+w10_domain: frankfurt.envsensor.net
+w10_ipv4addr: 141.95.1.155
+w10_ipv6addr: 2001:41d0:701:1100::aad9
+w10_ipv6mask: /128
+w10_ipv6_defaultgw: 2001:41d0:701:1100::1
+w10_city: Frankfurt
+
+w11_fqdn: worker11.frankfurt.envsensor.net
+w11_hostname: worker11
+w11_domain: frankfurt.envsensor.net
+w11_ipv4addr: 162.19.230.74
+w11_ipv6addr: 2001:41d0:701:1100::aba2
+w11_ipv6mask: /128
+w11_ipv6_defaultgw: 2001:41d0:701:1100::1
+w11_city: Frankfurt
+
+w12_fqdn: worker12.frankfurt.envsensor.net
+w12_hostname: worker12
+w12_domain: frankfurt.envsensor.net
+w12_ipv4addr: 57.129.62.37
+w12_ipv6addr: 2001:41d0:701:1100::8df
+w12_ipv6mask: /128
+w12_ipv6_defaultgw: 2001:41d0:701:1100::1
+w12_city: Frankfurt
+
+w13_fqdn: worker13.frankfurt.envsensor.net
+w13_hostname: worker13
+w13_domain: frankfurt.envsensor.net
+w13_ipv4addr: 162.19.228.235
+w13_ipv6addr: 2001:41d0:701:1100::ab0c
+w13_ipv6mask: /128
+w13_ipv6_defaultgw: 2001:41d0:701:1100::1
+w13_city: Frankfurt
+
+w14_fqdn: worker14.frankfurt.envsensor.net
+w14_hostname: worker14
+w14_domain: frankfurt.envsensor.net
+w14_ipv4addr: 162.19.230.105
+w14_ipv6addr: 2001:41d0:701:1100::ab1d
+w14_ipv6mask: /128
+w14_ipv6_defaultgw: 2001:41d0:701:1100::1
+w14_city: Frankfurt
+
+w15_fqdn: worker15.frankfurt.envsensor.net
+w15_hostname: worker15
+w15_domain: frankfurt.envsensor.net
+w15_ipv4addr: 162.19.231.79
+w15_ipv6addr: 2001:41d0:701:1100::72b1
+w15_ipv6mask: /128
+w15_ipv6_defaultgw: 2001:41d0:701:1100::1
+w15_city: Frankfurt
+
 
