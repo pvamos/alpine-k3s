@@ -418,9 +418,9 @@
     state: started
   when: inventory_hostname in groups.control1
 
-- name: Pause for 60 seconds
+- name: Pause for 120 seconds
   ansible.builtin.pause:
-    seconds: 60
+    seconds: 120
 
 
 - name: Create /etc/rancher/k3s/config.yaml for control2 and control3
@@ -436,9 +436,9 @@
     state: started
   when: inventory_hostname in groups.control23
 
-- name: Pause for 60 seconds
+- name: Pause for 120 seconds
   ansible.builtin.pause:
-    seconds: 60
+    seconds: 120
 
 
 - name: Copy /var/lib/rancher/k3s/server/node-token from control1 to /home/p/alpine-k3s on ansible host
@@ -480,16 +480,38 @@
     line: K3S_EXEC="agent"
   when: inventory_hostname in groups.ingress or inventory_hostname in groups.storage or inventory_hostname in groups.worker
 
-- name: Enable and start service k3s on ingress, storage and worker nodes
+- name: Enable and start service k3s on ingress nodes
   ansible.builtin.service:
     name: k3s
     enabled: yes
     state: started
-  when: inventory_hostname in groups.ingress or inventory_hostname in groups.storage or inventory_hostname in groups.worker
+  when: inventory_hostname in groups.ingress
 
-- name: Pause for 60 seconds
+- name: Pause for 120 seconds
   ansible.builtin.pause:
-    seconds: 60
+    seconds: 120
+
+- name: Enable and start service k3s on storage
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: started
+  when: inventory_hostname in groups.storage
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 120
+
+- name: Enable and start service k3s on worker nodes
+  ansible.builtin.service:
+    name: k3s
+    enabled: yes
+    state: started
+  when: inventory_hostname in groups.worker
+
+- name: Pause for 120 seconds
+  ansible.builtin.pause:
+    seconds: 180
 
 - name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/alpine-k3s on ansible host
   ansible.builtin.fetch:
@@ -531,9 +553,9 @@
     enabled: yes
     state: restarted
 
-- name: Pause for 120 seconds
+- name: Pause for 240 seconds
   ansible.builtin.pause:
-    seconds: 120
+    seconds: 240
 
 - name: Get kubectl get no
   ansible.builtin.command:
@@ -572,23 +594,23 @@
   ansible.builtin.command:
     cmd: /usr/bin/kubectl taint nodes ingress1 ingress2 ingress3 'node-role.kubernetes.io/ingress:NoSchedule'
   register: kubectl_taint_ingress_output
-  when: inventory_hostname in groups.ingress
+  when: inventory_hostname in groups.control1
 
 - name: Print control-plane NoSchedule taint for ingress1 ingress2 ingress3 output
   ansible.builtin.debug:
     var: kubectl_taint_ingress_output.stdout_lines
-  when: inventory_hostname in groups.ingress
+  when: inventory_hostname in groups.control1
 
 - name: Set control-plane NoSchedule taint for storage1 storage2 ... storage9
   ansible.builtin.command:
     cmd: /usr/bin/kubectl taint nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 'node-role.kubernetes.io/storage:NoSchedule'
   register: kubectl_taint_storage_output
-  when: inventory_hostname in groups.storage
+  when: inventory_hostname in groups.control1
 
 - name: Print control-plane NoSchedule taint for storage1 storage2 ... storage9
   ansible.builtin.debug:
     var: kubectl_taint_storage_output.stdout_lines
-  when: inventory_hostname in groups.storage
+  when: inventory_hostname in groups.control1
 
 - name: Get kubectl get no
   ansible.builtin.command:
