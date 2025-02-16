@@ -9,4 +9,4 @@
     - role: alpine_kernelparams
     - role: alpine_k3s_binaries
     - role: alpine_k3s_config
-#    - role: alpine_longhorn
+    - role: alpine_longhorn

@@ -1,7 +1,7 @@
 write-kubeconfig-mode: "0644"
 node-label:
   - "ovh-instance-type=vps2020-starter-1-2-200"
-  - "cluster-node-role=control"
+  - "cluster-node-role=controlplane"
 cluster-init: true
 token: "{{ k3s_token  }}"
 node-name: "{{ hostnamefromip }}"

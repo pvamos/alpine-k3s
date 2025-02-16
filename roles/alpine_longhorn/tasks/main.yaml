@@ -2,7 +2,7 @@
 
 # Alpine linux kubernetes Longhorn storage
 # configuring requirements:
-# https://longhorn.io/docs/1.4.1/deploy/install/#installation-requirements
+# https://longhorn.io/docs/1.8.0/deploy/install/#installation-requirements
 
 - name: Test connection with ping
   ansible.builtin.ping:
@@ -35,13 +35,13 @@
 #  ansible.builtin.pip:
 #    name: pyyaml
 
-- name: Run kubectl label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true
+- name: Run kubectl label nodes storage1 storage2 storage3 ... storage9 node.longhorn.io/create-default-disk=true
   ansible.builtin.command:
-    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 node.longhorn.io/create-default-disk=true
   register: kubectl_label_output
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true output
+- name: Print kubectl label nodes storage1 storage2 storage3 ... storage9 node.longhorn.io/create-default-disk=true output
   ansible.builtin.debug:
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
@@ -61,11 +61,11 @@
     mode: '0640'
   when: inventory_hostname in groups.control1
 
-- name: Deploy Longhorn Helm chart v1.5.1 with values loaded from template
+- name: Deploy Longhorn Helm chart v1.8.0 with values loaded from template
   kubernetes.core.helm:
     name: longhorn
     chart_ref: longhorn/longhorn
-    chart_version: 1.5.1
+    chart_version: 1.8.0
     create_namespace: true
     release_namespace: longhorn-system
     wait: true

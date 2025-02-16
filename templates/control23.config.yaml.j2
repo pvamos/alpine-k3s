@@ -1,7 +1,7 @@
 write-kubeconfig-mode: "0644"
 node-label:
   - "ovh-instance-type=vps2020-starter-1-2-20"
-  - "cluster-node-role=control"
+  - "cluster-node-role=controlplane"
 server: "https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }}"
 token: "{{ k3s_token  }}"
 node-name: "{{ hostnamefromip }}"

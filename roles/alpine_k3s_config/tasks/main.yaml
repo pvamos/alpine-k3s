@@ -557,6 +557,39 @@
   ansible.builtin.pause:
     seconds: 240
 
+- name: Run kubectl label nodes ingress1 ingress2 ingress3 node-role.kubernetes.io/ingress=true
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes ingress1 ingress2 ingress3 node-role.kubernetes.io/ingress=true
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes ingress1 ingress2 ingress3 node-role.kubernetes.io/ingress=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl label nodes storage1 storage2 storage3 ... storage9 node-role.kubernetes.io/storage=true
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 node-role.kubernetes.io/storage=true
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes storage1 storage2 storage3 ... storage9 node-role.kubernetes.io/storage=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl label nodes worker1 worker2 worker3 ... worker15 node-role.kubernetes.io/worker=true
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 worker5 worker6 worker7 worker8 worker9 worker10 worker11 worker12 worker13 worker14 worker15 node-role.kubernetes.io/worker=true
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes worker1 worker2 worker3 ... worker15 node-role.kubernetes.io/worker=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
 - name: Get kubectl get no
   ansible.builtin.command:
     cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide

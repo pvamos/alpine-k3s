@@ -4,6 +4,5 @@ token: "{{ k3s_node_token_from_control1 }}"
 node-label:
   - "ovh-instance-type=vps2020-starter-1-2-20"
   - "cluster-node-role=storage"
-  - "openebs.io/storage-node=true"
 node-external-ip: "{{ ipv4addr }}"
 flannel-iface: "{{ flannel_interface }}"
