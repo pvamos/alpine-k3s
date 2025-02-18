@@ -398,11 +398,25 @@
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w15_ipv4addr
 
 
-- name: Create the /etc/rancher/k3s directory if it does not exist
+- name: Create the /etc/rancher/k3s directory on all nodes, if it does not exist
   ansible.builtin.file:
     path: /etc/rancher/k3s
     state: directory
     mode: '0755'
+
+- name: Create the /var/lib/rancher/k3s/server/manifests directory on controlplane nodes, if it does not exist
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+    mode: '0755'
+  when: inventory_hostname in groups.controlplane
+
+
+- name: Create /var/lib/rancher/k3s/server/manifests/traefik-config.yaml on controlplane nodes
+  template:
+    src: templates/traefik-config.yaml.j2
+    dest: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+  when: inventory_hostname in groups.controlplane
 
 
 - name: Create /etc/rancher/k3s/config.yaml for control1
@@ -547,15 +561,6 @@
     group: root
     mode: '0644'
 
-- name: Restart service k3s on all nodes
-  ansible.builtin.service:
-    name: k3s
-    enabled: yes
-    state: restarted
-
-- name: Pause for 240 seconds
-  ansible.builtin.pause:
-    seconds: 240
 
 - name: Run kubectl label nodes ingress1 ingress2 ingress3 node-role.kubernetes.io/ingress=true
   ansible.builtin.command:
@@ -590,6 +595,83 @@
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
+
+- name: Set node-role.kubernetes.io/control-plane:NoSchedule taint for control1 control2 control3
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes control1 control2 control3 'node-role.kubernetes.io/control-plane:NoSchedule'
+  register: kubectl_taint_control_output
+  when: inventory_hostname in groups.control1
+
+- name: Print node-role.kubernetes.io/control-plane:NoSchedule taint for control1 control2 control3 output
+  ansible.builtin.debug:
+    var: kubectl_taint_control_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+# https://github.com/k3s-io/k3s/issues/1988
+- name: Set node-role.kubernetes.io/master:NoSchedule taint for ingress1 ingress2 ingress3
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes ingress1 ingress2 ingress3 'node-role.kubernetes.io/master:NoSchedule'
+  register: kubectl_taint_ingress_output
+  when: inventory_hostname in groups.control1
+
+- name: Print node-role.kubernetes.io/master:NoSchedule taint for ingress1 ingress2 ingress3 output
+  ansible.builtin.debug:
+    var: kubectl_taint_ingress_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+# https://github.com/k3s-io/k3s/issues/1988
+- name: Set CriticalAddonsOnly:NoSchedule taint for ingress1 ingress2 ingress3
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes ingress1 ingress2 ingress3 'CriticalAddonsOnly:NoSchedule'
+  register: kubectl_taint_ingress_output
+  when: inventory_hostname in groups.control1
+
+- name: Print CriticalAddonsOnly:NoSchedule taint for ingress1 ingress2 ingress3 output
+  ansible.builtin.debug:
+    var: kubectl_taint_ingress_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Set node-role.kubernetes.io/storage:NoSchedule taint for storage1 storage2 ... storage9
+  ansible.builtin.command:
+    cmd: /usr/bin/kubectl taint nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 'node-role.kubernetes.io/storage:NoSchedule'
+  register: kubectl_taint_storage_output
+  when: inventory_hostname in groups.control1
+
+- name: Print node-role.kubernetes.io/storage:NoSchedule taint for storage1 storage2 ... storage9 output
+  ansible.builtin.debug:
+    var: kubectl_taint_storage_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+
+# - name: Restart service k3s on all nodes
+  # ansible.builtin.service:
+    # name: k3s
+    # enabled: yes
+    # state: restarted
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: Reboot with new /etc/fstab
+  reboot:
+    connect_timeout: 15
+    reboot_timeout: 600
+    test_command: whoami
+
+- name: Ping
+  ping:
+
+- name: Pause for 240 seconds
+  ansible.builtin.pause:
+    seconds: 240
+
+
+- name: Ping
+  ping:
+
 - name: Get kubectl get no
   ansible.builtin.command:
     cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
@@ -612,46 +694,3 @@
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Set control-plane NoSchedule taint for control1 control2 control3
-  ansible.builtin.command:
-    cmd: /usr/bin/kubectl taint nodes control1 control2 control3 'node-role.kubernetes.io/control-plane:NoSchedule'
-  register: kubectl_taint_control_output
-  when: inventory_hostname in groups.control1
-
-- name: Print control-plane NoSchedule taint for control1 control2 control3 output
-  ansible.builtin.debug:
-    var: kubectl_taint_control_output.stdout_lines
-  when: inventory_hostname in groups.control1
-
-- name: Set control-plane NoSchedule taint for ingress1 ingress2 ingress3
-  ansible.builtin.command:
-    cmd: /usr/bin/kubectl taint nodes ingress1 ingress2 ingress3 'node-role.kubernetes.io/ingress:NoSchedule'
-  register: kubectl_taint_ingress_output
-  when: inventory_hostname in groups.control1
-
-- name: Print control-plane NoSchedule taint for ingress1 ingress2 ingress3 output
-  ansible.builtin.debug:
-    var: kubectl_taint_ingress_output.stdout_lines
-  when: inventory_hostname in groups.control1
-
-- name: Set control-plane NoSchedule taint for storage1 storage2 ... storage9
-  ansible.builtin.command:
-    cmd: /usr/bin/kubectl taint nodes storage1 storage2 storage3 storage4 storage5 storage6 storage7 storage8 storage9 'node-role.kubernetes.io/storage:NoSchedule'
-  register: kubectl_taint_storage_output
-  when: inventory_hostname in groups.control1
-
-- name: Print control-plane NoSchedule taint for storage1 storage2 ... storage9
-  ansible.builtin.debug:
-    var: kubectl_taint_storage_output.stdout_lines
-  when: inventory_hostname in groups.control1
-
-- name: Get kubectl get no
-  ansible.builtin.command:
-    cmd: /usr/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
-  register: kubectl_getno_output
-  when: inventory_hostname in groups.control1
-
-- name: Print kubectl get no output
-  ansible.builtin.debug:
-    var: kubectl_getno_output.stdout_lines
-  when: inventory_hostname in groups.control1

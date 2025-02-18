@@ -1,0 +1,23 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    deployment:
+      replicas: "3"
+      nodeSelector:
+		svccontroller.k3s.cattle.io/enablelb: "true"
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+          effect: "NoSchedule"
+    externalIPs:
+      - "{{ i1_ipv4addr }}"
+      - "{{ i2_ipv4addr }}"
+      - "{{ i3_ipv4addr }}"
+    externalTrafficPolicy: "Local"

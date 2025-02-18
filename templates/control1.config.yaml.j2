@@ -1,8 +1,8 @@
 write-kubeconfig-mode: "0644"
+cluster-init: "true"
 node-label:
   - "ovh-instance-type=vps2020-starter-1-2-200"
   - "cluster-node-role=controlplane"
-cluster-init: true
 token: "{{ k3s_token  }}"
 node-name: "{{ hostnamefromip }}"
 bind-address: "0.0.0.0"
@@ -26,7 +26,7 @@ cluster-dns: "{{ cluster_dns }}"
 cluster-domain: "{{ domainfromip }}"
 node-external-ip: "{{ ipv4addr }}"
 flannel-backend: "{{ flannel_backend }}"
-flannel-external-ip: true
+flannel-external-ip: "true"
 egress-selector-mode: "{{ egress_selector_mode }}"
 flannel-iface: "{{ flannel_interface }}"
 

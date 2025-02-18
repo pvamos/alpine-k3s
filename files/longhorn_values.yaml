@@ -7,7 +7,10 @@ global:
     - key: "node-role.kubernetes.io/control-plane"
       operator: "Exists"
       effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/ingress"
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "CriticalAddonsOnly"
       operator: "Exists"
       effect: "NoSchedule"
     - key: "node-role.kubernetes.io/storage"
@@ -139,7 +142,7 @@ persistence:
   # -- mkfs parameters of the default Longhorn StorageClass.
   defaultMkfsParams: ""
   # -- Replica count of the default Longhorn StorageClass.
-  defaultClassReplicaCount: 3
+  defaultClassReplicaCount: 2
   # -- Data locality of the default Longhorn StorageClass. (Options: "disabled", "best-effort")
   defaultDataLocality: disabled
   # -- Reclaim policy that provides instructions for handling of a volume after its claim is released. (Options: "Retain", "Delete")
@@ -193,19 +196,19 @@ csi:
   # -- kubelet root directory. When unspecified, Longhorn uses the default value.
   kubeletRootDir: "/var/lib/kubelet"
   # -- Replica count of the CSI Attacher. When unspecified, Longhorn uses the default value ("3").
-  attacherReplicaCount: ~
+  attacherReplicaCount: "2"
   # -- Replica count of the CSI Provisioner. When unspecified, Longhorn uses the default value ("3").
-  provisionerReplicaCount: ~
+  provisionerReplicaCount: "2"
   # -- Replica count of the CSI Resizer. When unspecified, Longhorn uses the default value ("3").
-  resizerReplicaCount: ~
+  resizerReplicaCount: "2"
   # -- Replica count of the CSI Snapshotter. When unspecified, Longhorn uses the default value ("3").
-  snapshotterReplicaCount: ~
+  snapshotterReplicaCount: "2"
 
 defaultSettings:
   # -- Setting that allows Longhorn to automatically attach a volume and create snapshots/backups when recurring jobs run.
   allowRecurringJobWhileVolumeDetached: ~
   # -- Setting that allows Longhorn to automatically create a default disk only on nodes with the label "node.longhorn.io/create-default-disk=true".
-  createDefaultDiskLabeledNodes: ~
+  createDefaultDiskLabeledNodes: true
   # -- Default path for storing data on a host. The default value is "/var/lib/longhorn/".
   defaultDataPath: ~
   # -- Default data locality.
@@ -241,7 +244,7 @@ defaultSettings:
   # -- Maximum number of failed support bundles that can exist in the cluster.
   supportBundleFailedHistoryLimit: ~
   # -- Taint or toleration for system-managed Longhorn components, in "kubectl taint" syntax.
-  taintToleration: "node-role.kubernetes.io/control-plane=:NoSchedule; node-role.kubernetes.io/ingress=:NoSchedule; node-role.kubernetes.io/storage=:NoSchedule"
+  taintToleration: "node-role.kubernetes.io/control-plane=:NoSchedule; node-role.kubernetes.io/master=:NoSchedule; CriticalAddonsOnly=:NoSchedule; node-role.kubernetes.io/storage=:NoSchedule"
   # -- Node selector for system-managed Longhorn components.
   systemManagedComponentsNodeSelector: ~
   # -- PriorityClass for system-managed Longhorn components.
@@ -313,15 +316,15 @@ defaultSettings:
   # -- Log level for Longhorn Manager. The default is "Info".
   logLevel: ~
   # -- Setting that allows you to specify a backup compression method.
-  backupCompressionMethod: ~
+  backupCompressionMethod: "gzip"
   # -- Maximum number of worker threads that can concurrently run for each backup.
   backupConcurrentLimit: ~
   # -- Maximum number of worker threads that can concurrently run for each restore operation.
   restoreConcurrentLimit: ~
   # -- Setting that allows you to enable the V1 Data Engine.
-  v1DataEngine: ~
+  v1DataEngine: true
   # -- Setting that allows you to enable the V2 Data Engine (experimental).
-  v2DataEngine: ~
+  v2DataEngine: false
   # -- Setting that allows you to configure maximum huge page size (in MiB) for the V2 Data Engine.
   v2DataEngineHugepageLimit: ~
   # -- Number of millicpus to be reserved for each Instance Manager pod when the V2 Data Engine is enabled.
@@ -329,15 +332,15 @@ defaultSettings:
   # -- CPU cores on which the SPDK target daemon should run.
   v2DataEngineCPUMask: ~
   # -- Setting that allows scheduling of volumes with empty node selectors to any node.
-  allowEmptyNodeSelectorVolume: ~
+  allowEmptyNodeSelectorVolume: false
   # -- Setting that allows scheduling of volumes with empty disk selectors to any disk.
-  allowEmptyDiskSelectorVolume: ~
+  allowEmptyDiskSelectorVolume: false
   # -- Setting that allows Longhorn to periodically collect anonymous usage data.
-  allowCollectingLonghornUsageMetrics: ~
+  allowCollectingLonghornUsageMetrics: false
   # -- Setting that temporarily prevents all attempts to purge volume snapshots.
-  disableSnapshotPurge: ~
+  disableSnapshotPurge: true
   # -- Maximum snapshot count for a volume. The value should be between 2 to 250
-  snapshotMaxCount: ~
+  snapshotMaxCount: 50
   # -- Setting that allows you to configure the log level of the spdk_tgt for the V2 Data Engine.
   v2DataEngineLogLevel: ~
   # -- Setting that allows you to configure the log flags of the spdk_tgt for the V2 Data Engine.
@@ -345,9 +348,9 @@ defaultSettings:
   # -- Setting that freezes the filesystem on the root partition before a snapshot is created.
   freezeFilesystemForSnapshot: ~
   # -- Setting that automatically cleans up the snapshot when the backup is deleted.
-  autoCleanupSnapshotWhenDeleteBackup: ~
+  autoCleanupSnapshotWhenDeleteBackup: true
   # -- Setting that allows Longhorn to detect node failure and immediately migrate affected RWX volumes.
-  rwxVolumeFastFailover: ~  
+  rwxVolumeFastFailover: true  
 
 # -- Setting that allows you to update the default backupstore.
 defaultBackupStore:
@@ -387,9 +390,12 @@ longhornManager:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
       effect: NoSchedule
-    - key: node-role.kubernetes.io/ingress
+    - key: node-role.kubernetes.io/master
       operator: Exists
       effect: NoSchedule
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
     - key: node-role.kubernetes.io/storage
       operator: Exists
       effect: NoSchedule
@@ -423,9 +429,12 @@ longhornDriver:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
       effect: NoSchedule
-    - key: node-role.kubernetes.io/ingress
+    - key: node-role.kubernetes.io/master
       operator: Exists
       effect: NoSchedule
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
     - key: node-role.kubernetes.io/storage
       operator: Exists
       effect: NoSchedule
@@ -438,7 +447,7 @@ longhornDriver:
 
 longhornUI:
   # -- Replica count for Longhorn UI.
-  replicas: 2
+  replicas: 1
   # -- PriorityClass for Longhorn UI.
   priorityClass: *defaultPriorityClassNameRef
   # -- Toleration for Longhorn UI on nodes allowed to run Longhorn components.
