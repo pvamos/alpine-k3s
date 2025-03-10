@@ -60,6 +60,32 @@ ingress3.frankfurt.envsensor.net
 # fityusz@gmail.com
 
 
+[kafka]
+kafka1.frankfurt.envsensor.net
+# vps-3e6dd648.vps.ovh.net
+# 135.125.182.46
+# 2001:41d0:701:1100::6243
+# info@hardened.tech
+
+kafka2.frankfurt.envsensor.net
+# vps-47ce3053.vps.ovh.net
+# 57.129.65.72
+# 2001:41d0:701:1100::2f5a
+# info@hardened.tech
+
+kafka3.frankfurt.envsensor.net
+# vps-78f3c8ac.vps.ovh.net
+# 51.38.98.86
+# 2001:41d0:701:1100::1fec
+# info@hardened.tech
+
+kafka4.frankfurt.envsensor.net
+# vps-c432d190.vps.ovh.net
+# 54.38.157.88
+# 2001:41d0:701:1100::4901
+# info@hardened.tech
+
+
 [storage]
 storage1.frankfurt.envsensor.net
 # vps-2b54acc0.vps.ovh.net

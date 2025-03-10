@@ -137,6 +137,42 @@ i3_ipv6mask: /128
 i3_ipv6_defaultgw: 2001:41d0:701:1100::1
 i3_city: Frankfurt
 
+k1_fqdn: kafka1.frankfurt.envsensor.net
+k1_hostname: kafka1
+k1_domain: frankfurt.envsensor.net
+k1_ipv4addr: 135.125.182.46
+k1_ipv6addr: 2001:41d0:701:1100::6243
+k1_ipv6mask: /128
+k1_ipv6_defaultgw: 2001:41d0:701:1100::1
+k1_city: Frankfurt
+
+k2_fqdn: kafka2.frankfurt.envsensor.net
+k2_hostname: kafka2
+k2_domain: frankfurt.envsensor.net
+k2_ipv4addr: 57.129.65.72
+k2_ipv6addr: 2001:41d0:701:1100::2f5a
+k2_ipv6mask: /128
+k2_ipv6_defaultgw: 2001:41d0:701:1100::1
+k2_city: Frankfurt
+
+k3_fqdn: kafka3.frankfurt.envsensor.net
+k3_hostname: kafka3
+k3_domain: frankfurt.envsensor.net
+k3_ipv4addr: 51.38.98.86
+k3_ipv6addr: 2001:41d0:701:1100::1fec
+k3_ipv6mask: /128
+k3_ipv6_defaultgw: 2001:41d0:701:1100::1
+k3_city: Frankfurt
+
+k4_fqdn: kafka4.frankfurt.envsensor.net
+k4_hostname: kafka4
+k4_domain: frankfurt.envsensor.net
+k4_ipv4addr: 54.38.157.88
+k4_ipv6addr: 2001:41d0:701:1100::4901
+k4_ipv6mask: /128
+k4_ipv6_defaultgw: 2001:41d0:701:1100::1
+k4_city: Frankfurt
+
 s1_fqdn: storage1.frankfurt.envsensor.net
 s1_hostname: storage1
 s1_domain: frankfurt.envsensor.net

@@ -61,11 +61,11 @@
     mode: '0640'
   when: inventory_hostname in groups.control1
 
-- name: Deploy Longhorn Helm chart v1.8.0 with values loaded from template
+- name: Deploy Longhorn Helm chart v1.8.1 with values loaded from template
   kubernetes.core.helm:
     name: longhorn
     chart_ref: longhorn/longhorn
-    chart_version: 1.8.0
+    chart_version: 1.8.1
     create_namespace: true
     release_namespace: longhorn-system
     wait: true
