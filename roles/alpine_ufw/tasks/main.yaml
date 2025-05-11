@@ -1,0 +1,85 @@
+---
+# Alpine Linux UFW configuration for HA k3s cluster with VXLAN and embedded etcd
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Detect public IP
+  ansible.builtin.shell: curl -s http://ipv4.icanhazip.com
+  register: public_ip_raw
+  changed_when: false
+
+- name: Set fact - public IP
+  ansible.builtin.set_fact:
+    this_public_ip: "{{ public_ip_raw.stdout | trim }}"
+
+- name: Determine node role
+  ansible.builtin.set_fact:
+    node_role: >-
+      {{ 'controlplane' if this_public_ip in control_plane_ips else 'worker' if this_public_ip in worker_ips else 'unknown' }}
+
+- name: Fail if IP not recognized
+  ansible.builtin.fail:
+    msg: "This node's public IP ({{ this_public_ip }}) is not listed in control_plane_ips or worker_ips."
+  when: node_role == 'unknown'
+
+- name: Combine all known node IPs
+  ansible.builtin.set_fact:
+    all_node_ips: "{{ control_plane_ips + worker_ips }}"
+
+- name: Install apk packages - iptables ufw
+  ansible.builtin.command: /sbin/apk add iptables ufw
+
+- name: Reset UFW and remove all rules
+  ansible.builtin.command: /usr/sbin/ufw --force reset
+
+- name: Set default policy to deny incoming
+  ansible.builtin.command: /usr/sbin/ufw default deny incoming
+
+- name: Set default policy to allow outgoing
+  ansible.builtin.command: /usr/sbin/ufw default allow outgoing
+
+- name: Allow incoming SSH on port {{ ansible_port }}
+  ansible.builtin.command: "/usr/sbin/ufw allow {{ ansible_port }}/tcp comment 'Allow incoming SSH on port {{ ansible_port }}'"
+
+- name: Allow API access from HAProxy (on controlplane nodes)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ haproxy_ip }} to any port 6443 proto tcp comment 'Allow API access from HAProxy'"
+  when: node_role == 'controlplane'
+
+- name: Allow Kubernetes API (6443) from worker nodes (on controlplane nodes)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ item }} to any port 6443 proto tcp comment 'Allow worker to access API'"
+  loop: "{{ worker_ips }}"
+  when: node_role == 'controlplane'
+
+- name: Allow VXLAN from other nodes (UDP 8472)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ item }} to any port 8472 proto udp comment 'Allow VXLAN overlay traffic'"
+  loop: "{{ all_node_ips }}"
+  when: item != this_public_ip
+
+- name: Allow Kubelet from other nodes (TCP 10250)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ item }} to any port 10250 proto tcp comment 'Allow Kubelet communication'"
+  loop: "{{ all_node_ips }}"
+  when: item != this_public_ip
+
+- name: Allow control-plane peer traffic (API, etcd, controller, scheduler)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ item.0 }} to any port {{ item.1 }} proto tcp comment 'Control-plane peer communication'"
+  loop: "{{ control_plane_ips | difference([this_public_ip]) | product([6443, 2379, 2380, 10257, 10259]) | list }}"
+  when: node_role == 'controlplane'
+
+- name: Allow loopback traffic (recommended fallback)
+  ansible.builtin.command: "/usr/sbin/ufw allow in on lo comment 'Allow loopback'"
+  ignore_errors: true  # in case already allowed or not needed
+
+- name: Enable UFW
+  ansible.builtin.command: /usr/sbin/ufw --force enable
+
+- name: Get UFW status
+  ansible.builtin.command: /usr/sbin/ufw status numbered
+  register: get_ufw_status
+
+- name: Print UFW status
+  ansible.builtin.debug:
+    var: get_ufw_status.stdout_lines
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
