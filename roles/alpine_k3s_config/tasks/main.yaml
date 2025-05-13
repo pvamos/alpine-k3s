@@ -339,6 +339,32 @@
   delegate_to: localhost
   run_once: true
 
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 10 seconds
+  ansible.builtin.pause:
+    seconds: 10
+
 - name: sync
   ansible.builtin.raw: sync
 
