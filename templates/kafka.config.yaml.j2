@@ -1,8 +1,0 @@
-server: "https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }}"
-node-name: "{{ hostnamefromip }}"
-token: "{{ k3s_node_token_from_control1 }}"
-node-label:
-  - "ovh-instance-type=vps2023-le-2"
-  - "cluster-node-role=kafka"
-node-external-ip: "{{ ipv4addr }}"
-flannel-iface: "{{ flannel_interface }}"

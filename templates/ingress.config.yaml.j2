@@ -1,9 +1,0 @@
-server: "https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }}"
-node-name: "{{ hostnamefromip }}"
-token: "{{ k3s_node_token_from_control1 }}"
-node-label:
-  - "svccontroller.k3s.cattle.io/enablelb=true"
-  - "ovh-instance-type=vps2020-starter-1-2-20"
-  - "cluster-node-role=ingress"
-node-external-ip: "{{ ipv4addr }}"
-flannel-iface: "{{ flannel_interface }}"

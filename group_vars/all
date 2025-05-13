@@ -58,9 +58,11 @@ worker_ips:
   - 87.106.133.169
   - 217.154.87.235
   - 87.106.144.35
+  - 217.154.207.87
 
-haproxy_ip: 217.154.243.88
-
+haproxy_api: 217.154.243.88
+haproxy_mqtt: 217.154.243.85
+haproxy_lb1: 194.164.62.184
 
 reg_fqdn: reg.envsensor.net
 reg_hostname: reg
@@ -131,3 +133,10 @@ w3_domain: berlin.envsensor.net
 w3_ipv4addr: 87.106.144.35
 w3_ipv6addr: 2a01:239:341:c900::1
 w3_city: Berlin
+
+w4_fqdn: worker4.berlin.envsensor.net
+w4_hostname: worker4
+w4_domain: berlin.envsensor.net
+w4_ipv4addr: 217.154.207.87
+w4_ipv6addr: 2a01:239:392:a100::1
+w4_city: Berlin

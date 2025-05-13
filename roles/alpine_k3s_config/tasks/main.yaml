@@ -114,13 +114,24 @@
     city: "{{ w3_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w3_ipv4addr
 
+- name: Set host variables for worker4.berlin.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w4_fqdn }}"
+    hostnamefromip: "{{ w4_hostname }}"
+    domainfromip: "{{ w4_domain }}"
+    ipv4addr: "{{ w4_ipv4addr }}"
+    ipv6addr: "{{  w4_ipv6addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w4_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w4_ipv4addr
+
 - name: Print host variables
   debug:
     msg: "fqdnfromip: {{ fqdnfromip }} hostnamefromip: {{ hostnamefromip }} domainfromip: {{ domainfromip }} city: {{ city }} macaddress: {{ macaddress }} ipv4addr: {{ ipv4addr }} ipv6addr: {{ ipv6addr }}"
 
 
 - name: Initialialize control1 with get.k3s.io script
-  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
   register: control1_output
   when: inventory_hostname in groups.control1
 
@@ -134,7 +145,7 @@
     seconds: 30
 
 - name: Initialialize control2 and control3 with get.k3s.io script
-  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --server https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --server https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
   register: control23_output
   when: inventory_hostname in groups.control23
 
@@ -157,20 +168,20 @@
     var: worker_output.stdout_lines
   when: inventory_hostname in groups.worker
 
-- name: Pause for 30 seconds
+- name: Pause for 60 seconds
   ansible.builtin.pause:
-    seconds: 30
+    seconds: 60
 
 
-- name: Set node-role.kubernetes.io/control-plane:NoSchedule taint for control1 control2 control3
+- name: Run kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true
   ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl taint nodes control1 control2 control3 'node-role.kubernetes.io/control-plane:NoSchedule'
-  register: kubectl_taint_control_output
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true --overwrite
+  register: kubectl_label_output
   when: inventory_hostname in groups.control1
 
-- name: Print node-role.kubernetes.io/control-plane:NoSchedule taint for control1 control2 control3 output
+- name: Print kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true output
   ansible.builtin.debug:
-    var: kubectl_taint_control_output.stdout_lines
+    var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
 
@@ -222,7 +233,7 @@
 - name: sync
   ansible.builtin.raw: sync
 
-- name: Reboot with new /etc/fstab
+- name: Reboot to have a clean start with new configurations
   reboot:
     connect_timeout: 15
     reboot_timeout: 600

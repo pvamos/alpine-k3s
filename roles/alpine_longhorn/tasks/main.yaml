@@ -31,17 +31,13 @@
     enabled: yes
     state: started
 
-#- name: Install pyyaml python package
-#  ansible.builtin.pip:
-#    name: pyyaml
-
-- name: Run kubectl label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 node.longhorn.io/create-default-disk=true
   ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 node.longhorn.io/create-default-disk=true
   register: kubectl_label_output
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl label nodes worker1 worker2 worker3 node.longhorn.io/create-default-disk=true output
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 node.longhorn.io/create-default-disk=true output
   ansible.builtin.debug:
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
