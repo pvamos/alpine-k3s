@@ -162,21 +162,41 @@
   delegate_to: localhost
   run_once: true
               
-- name: Apply Longhorn Manager PodDisruptionBudget
+- name: Ensure Longhorn Manager PDB
   kubernetes.core.k8s:
     kubeconfig: "{{ ansible_local_kubeconfig }}"
     validate_certs: false
     state: present
-    definition: "{{ lookup('file', 'files/pdb-longhorn-manager.yaml') | from_yaml }}"
+    definition:
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      metadata:
+        name: longhorn-manager-pdb
+        namespace: longhorn-system
+      spec:
+        minAvailable: 1
+        selector:
+          matchLabels:
+            app: longhorn-manager
   delegate_to: localhost
   run_once: true
 
-- name: Apply Longhorn CSI Plugin PodDisruptionBudget
+- name: Ensure Longhorn CSI Plugin PDB
   kubernetes.core.k8s:
     kubeconfig: "{{ ansible_local_kubeconfig }}"
     validate_certs: false
     state: present
-    definition: "{{ lookup('file', 'files/pdb-longhorn-csi.yaml') | from_yaml }}"
+    definition:
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      metadata:
+        name: longhorn-csi-pdb
+        namespace: longhorn-system
+      spec:
+        minAvailable: 1
+        selector:
+          matchLabels:
+            app: longhorn-csi-plugin
   delegate_to: localhost
   run_once: true
 

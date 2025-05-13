@@ -172,17 +172,8 @@
   ansible.builtin.pause:
     seconds: 60
 
-
-- name: Run kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true
-  ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true --overwrite
-  register: kubectl_label_output
-  when: inventory_hostname in groups.control1
-
-- name: Print kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true output
-  ansible.builtin.debug:
-    var: kubectl_label_output.stdout_lines
-  when: inventory_hostname in groups.control1
+- name: Ping
+  ping:
 
 - name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/alpine-k3s on ansible host
   ansible.builtin.fetch:
@@ -225,6 +216,17 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Run kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Patch CoreDNS deployment (2 replicas, control-plane nodes)
   kubernetes.core.k8s:
@@ -280,24 +282,62 @@
   delegate_to: localhost
   run_once: true
 
-- name: Apply CoreDNS PDB
+- name: Ensure CoreDNS PDB
   kubernetes.core.k8s:
     kubeconfig: "{{ ansible_local_kubeconfig }}"
     validate_certs: false
     state: present
-    definition: "{{ lookup('file', 'files/pdb-coredns.yaml') | from_yaml }}"
+    definition:
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      metadata:
+        name: coredns-pdb
+        namespace: kube-system
+      spec:
+        minAvailable: 1
+        selector:
+          matchLabels:
+            k8s-app: kube-dns
   delegate_to: localhost
   run_once: true
 
-- name: Apply Traefik PDB
+- name: Ensure Traefik PDB
   kubernetes.core.k8s:
     kubeconfig: "{{ ansible_local_kubeconfig }}"
     validate_certs: false
     state: present
-    definition: "{{ lookup('file', 'files/pdb-traefik.yaml') | from_yaml }}"
+    definition:
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      metadata:
+        name: traefik-pdb
+        namespace: kube-system
+      spec:
+        minAvailable: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: traefik
   delegate_to: localhost
   run_once: true
 
+- name: Ensure metrics-server PDB
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    state: present
+    definition:
+      apiVersion: policy/v1
+      kind: PodDisruptionBudget
+      metadata:
+        name: metrics-server-pdb
+        namespace: kube-system
+      spec:
+        minAvailable: 1
+        selector:
+          matchLabels:
+            k8s-app: metrics-server
+  delegate_to: localhost
+  run_once: true
 
 - name: sync
   ansible.builtin.raw: sync
