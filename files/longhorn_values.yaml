@@ -452,7 +452,7 @@ longhornDriver:
   #  label-key2: "label-value2"
 longhornUI:
   # -- Replica count for Longhorn UI.
-  replicas: 1
+  replicas: 2
   # -- PriorityClass for Longhorn UI.
   priorityClass: *defaultPriorityClassNameRef
   # -- Toleration for Longhorn UI on nodes allowed to run Longhorn components.

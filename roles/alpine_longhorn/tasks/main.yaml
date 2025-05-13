@@ -108,6 +108,89 @@
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Patch longhorn-ui (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: longhorn-system
+    kind: Deployment
+    name: longhorn-ui
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+
+- name: Patch csi-attacher (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: longhorn-system
+    kind: Deployment
+    name: csi-attacher
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+
+- name: patch csi-provisioner (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: longhorn-system
+    kind: Deployment
+    name: csi-provisioner
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+              
+- name: Apply Longhorn Manager PodDisruptionBudget
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    state: present
+    definition: "{{ lookup('file', 'files/pdb-longhorn-manager.yaml') | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Apply Longhorn CSI Plugin PodDisruptionBudget
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    state: present
+    definition: "{{ lookup('file', 'files/pdb-longhorn-csi.yaml') | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1
+
 - name: Pause for 60 seconds
   ansible.builtin.pause:
     seconds: 60

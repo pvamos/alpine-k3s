@@ -184,7 +184,6 @@
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-
 - name: Copy /etc/rancher/k3s/k3s.yaml from control1 to /home/p/alpine-k3s on ansible host
   ansible.builtin.fetch:
     src: /etc/rancher/k3s/k3s.yaml
@@ -226,6 +225,79 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Patch CoreDNS deployment (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: kube-system
+    kind: Deployment
+    name: coredns
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+
+- name: Patch Traefik deployment (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: kube-system
+    kind: Deployment
+    name: traefik
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+
+- name: Patch Metrics Server deployment (2 replicas, control-plane nodes)
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    namespace: kube-system
+    kind: Deployment
+    name: metrics-server
+    merge_type: strategic-merge
+    definition:
+      spec:
+        replicas: 2
+        template:
+          spec:
+            nodeSelector:
+              node-role.kubernetes.io/control-plane: "true"
+  delegate_to: localhost
+  run_once: true
+
+- name: Apply CoreDNS PDB
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    state: present
+    definition: "{{ lookup('file', 'files/pdb-coredns.yaml') | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Apply Traefik PDB
+  kubernetes.core.k8s:
+    kubeconfig: "{{ ansible_local_kubeconfig }}"
+    validate_certs: false
+    state: present
+    definition: "{{ lookup('file', 'files/pdb-traefik.yaml') | from_yaml }}"
+  delegate_to: localhost
+  run_once: true
+
 
 - name: sync
   ansible.builtin.raw: sync
