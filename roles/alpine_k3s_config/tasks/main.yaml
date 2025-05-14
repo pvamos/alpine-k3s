@@ -209,6 +209,22 @@
   when: inventory_hostname in groups.control1
   delegate_to: 127.0.0.1
 
+- name: Set cluster name to FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/alpine-k3s/k3s.yaml
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Set cluster name to FQDN in /home/p/.kube/config on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/.kube/config
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
 - name: Copy the same /home/p/alpine-k3s/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on all nodes
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/k3s.yaml
