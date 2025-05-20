@@ -209,7 +209,7 @@
   when: inventory_hostname in groups.control1
   delegate_to: 127.0.0.1
 
-- name: Set cluster name to FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
+- name: Replace context name with FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
   ansible.builtin.lineinfile:
     path: /home/p/alpine-k3s/k3s.yaml
     regexp: '^  name: default'
@@ -217,11 +217,59 @@
   when: inventory_hostname in groups.control1
   delegate_to: 127.0.0.1
 
-- name: Set cluster name to FQDN in /home/p/.kube/config on ansible host
+- name: Replace context name with FQDN in /home/p/.kube/config on ansible host
   ansible.builtin.lineinfile:
     path: /home/p/.kube/config
     regexp: '^  name: default'
     line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context cluster with FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/alpine-k3s/k3s.yaml
+    regexp: '^    cluster: default'
+    line: "    cluster: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context cluster with FQDN in /home/p/.kube/config on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/.kube/config
+    regexp: '^    cluster: default'
+    line: "    cluster: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace cluster name with FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/alpine-k3s/k3s.yaml
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace cluster name with FQDN in /home/p/.kube/config on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/.kube/config
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace current-context with FQDN in /home/p/alpine-k3s/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/alpine-k3s/k3s.yaml
+    regexp: '^current-context: default'
+    line: "current-context: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace current-context with FQDN in /home/p/.kube/config on ansible host
+  ansible.builtin.lineinfile:
+    path: /home/p/.kube/config
+    regexp: '^current-context: default'
+    line: "current-context: {{ loadbalancer_fqdn }}"
   when: inventory_hostname in groups.control1
   delegate_to: 127.0.0.1
 
