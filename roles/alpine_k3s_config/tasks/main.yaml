@@ -292,6 +292,17 @@
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Run kubectl taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane/NoSchedule
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane:NoSchedule --overwrite
+  register: kubectl_taint_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane/NoSchedule output
+  ansible.builtin.debug:
+    var: kubectl_taint_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
 - name: Patch CoreDNS deployment (2 replicas, control-plane nodes)
   kubernetes.core.k8s:
     kubeconfig: "{{ ansible_local_kubeconfig }}"
