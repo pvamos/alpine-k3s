@@ -129,7 +129,6 @@
   debug:
     msg: "fqdnfromip: {{ fqdnfromip }} hostnamefromip: {{ hostnamefromip }} domainfromip: {{ domainfromip }} city: {{ city }} macaddress: {{ macaddress }} ipv4addr: {{ ipv4addr }} ipv6addr: {{ ipv6addr }}"
 
-
 - name: Initialialize control1 with get.k3s.io script
   ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
   register: control1_output
@@ -304,115 +303,145 @@
   when: inventory_hostname in groups.control1
 
 - name: Patch CoreDNS deployment (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: kube-system
-    kind: Deployment
-    name: coredns
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment coredns \
+      -n kube-system \
+      --type=strategic \
+      -p '{
+        "spec": {
+          "replicas": 2,
+          "template": {
+            "spec": {
+              "nodeSelector": {
+                "node-role.kubernetes.io/control-plane": "true"
+              }
+            }
+          }
+        }
+      }'
+  register: kubectl_patch_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Patch CoreDNS deployment output
+  ansible.builtin.debug:
+    var: kubectl_patch_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Patch Traefik deployment (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: kube-system
-    kind: Deployment
-    name: traefik
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment traefik \
+      -n kube-system \
+      --type=strategic \
+      -p '{
+        "spec": {
+          "replicas": 2,
+          "template": {
+            "spec": {
+              "nodeSelector": {
+                "node-role.kubernetes.io/control-plane": "true"
+              }
+            }
+          }
+        }
+      }'
+  register: kubectl_patch_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Patch Traefik deployment output
+  ansible.builtin.debug:
+    var: kubectl_patch_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Patch Metrics Server deployment (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: kube-system
-    kind: Deployment
-    name: metrics-server
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment metrics-server \
+      -n kube-system \
+      --type=strategic \
+      -p '{
+        "spec": {
+          "replicas": 2,
+          "template": {
+            "spec": {
+              "nodeSelector": {
+                "node-role.kubernetes.io/control-plane": "true"
+              }
+            }
+          }
+        }
+      }'
+  register: kubectl_patch_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Patch Metrics Server deployment output
+  ansible.builtin.debug:
+    var: kubectl_patch_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Ensure CoreDNS PDB
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    state: present
-    definition:
-      apiVersion: policy/v1
-      kind: PodDisruptionBudget
-      metadata:
-        name: coredns-pdb
-        namespace: kube-system
-      spec:
-        minAvailable: 1
-        selector:
-          matchLabels:
-            k8s-app: kube-dns
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: coredns-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          k8s-app: kube-dns
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure CoreDNS PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Ensure Traefik PDB
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    state: present
-    definition:
-      apiVersion: policy/v1
-      kind: PodDisruptionBudget
-      metadata:
-        name: traefik-pdb
-        namespace: kube-system
-      spec:
-        minAvailable: 1
-        selector:
-          matchLabels:
-            app.kubernetes.io/name: traefik
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: traefik-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: traefik
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
 
-- name: Ensure metrics-server PDB
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    state: present
-    definition:
-      apiVersion: policy/v1
-      kind: PodDisruptionBudget
-      metadata:
-        name: metrics-server-pdb
-        namespace: kube-system
-      spec:
-        minAvailable: 1
-        selector:
-          matchLabels:
-            k8s-app: metrics-server
-  delegate_to: localhost
-  run_once: true
+- name: Print Ensure Traefik PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Ensure Metrics Server PDB
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: metrics-server-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          k8s-app: metrics-server
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure Metrics Server PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Run kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true
   ansible.builtin.command:
