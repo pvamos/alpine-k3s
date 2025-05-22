@@ -1,53 +1,53 @@
 [controlplane]
-212.227.49.96
+217.154.222.120
 # control1.berlin.envsensor.net
-# Auftragsnummer:	9309678
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				212.227.49.96
-# IPv6:				2a01:239:20e:ab00::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373436
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.120
+# IPv6:				2a01:239:293:d900::1
+# Preis:			4.27 EUR
 
-85.215.180.60
+217.154.222.123
 # control2.berlin.envsensor.net
-# Auftragsnummer:	9321783
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				85.215.180.60
-# IPv6:				2a01:239:343:9d00::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373439
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.123
+# IPv6:				2a01:239:2a5:1100::1
+# Preis:			4.27 EUR
 
-212.132.120.239
+217.154.222.124
 # control3.berlin.envsensor.net
-# Auftragsnummer:	9321784
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				212.132.120.239
-# IPv6:				2a01:239:388:8100::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373440
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.124
+# IPv6:				2a01:239:2a5:7e00::1
+# Preis:			4.27 EUR
 
 [control1]
-212.227.49.96
+217.154.222.120
 # control1.berlin.envsensor.net
-# Auftragsnummer:	9309678
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				212.227.49.96
-# IPv6:				2a01:239:20e:ab00::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373436
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.120
+# IPv6:				2a01:239:293:d900::1
+# Preis:			4.27 EUR
 
 [control23]
-85.215.180.60
+217.154.222.123
 # control2.berlin.envsensor.net
-# Auftragsnummer:	9321783
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				85.215.180.60
-# IPv6:				2a01:239:343:9d00::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373439
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.123
+# IPv6:				2a01:239:2a5:1100::1
+# Preis:			4.27 EUR
 
-212.132.120.239
+217.154.222.124
 # control3.berlin.envsensor.net
-# Auftragsnummer:	9321784
-# Paketname:		VPS Linux VC1-2 (LZ 1)
-# IPv4:				212.132.120.239
-# IPv6:				2a01:239:388:8100::1
-# Preis:			2.13 EUR
+# Auftragsnummer:	9373440
+# Paketname:		VPS Linux VC2-4 (LZ1)
+# IPv4:				217.154.222.124
+# IPv6:				2a01:239:2a5:7e00::1
+# Preis:			4.27 EUR
 
 
 [worker]

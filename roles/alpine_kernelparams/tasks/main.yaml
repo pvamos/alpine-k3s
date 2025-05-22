@@ -46,7 +46,7 @@
   lineinfile:
     path: /etc/update-extlinux.conf
     regexp: '^default_kernel_opts='
-    line: 'default_kernel_opts="quiet rootfstype=ext4 cgroup_no_v1=all systemd.unified_cgroup_hierarchy=1"'
+    line: 'default_kernel_opts="quiet rootfstype=ext4 cgroup_no_v1=all systemd.unified_cgroup_hierarchy=1 reboot=hard"'
 
 - name: Run update-extlinux to regenerate /boot/extlinux.conf
   command: /sbin/update-extlinux

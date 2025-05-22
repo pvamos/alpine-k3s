@@ -109,96 +109,93 @@
   when: inventory_hostname in groups.control1
 
 - name: Patch longhorn-ui (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: longhorn-system
-    kind: Deployment
-    name: longhorn-ui
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.command:
+    cmd: >
+      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
+      -n longhorn-system patch deployment longhorn-ui
+      --type=strategic
+      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+  register: patch_longhorn_ui
+  when: inventory_hostname in groups.control1
+
+- name: Print patch longhorn-ui output
+  ansible.builtin.debug:
+    var: patch_longhorn_ui.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Patch csi-attacher (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: longhorn-system
-    kind: Deployment
-    name: csi-attacher
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.command:
+    cmd: >
+      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
+      -n longhorn-system patch deployment csi-attacher
+      --type=strategic
+      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+  register: patch_csi_attacher
+  when: inventory_hostname in groups.control1
 
-- name: patch csi-provisioner (2 replicas, control-plane nodes)
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    namespace: longhorn-system
-    kind: Deployment
-    name: csi-provisioner
-    merge_type: strategic-merge
-    definition:
-      spec:
-        replicas: 2
-        template:
-          spec:
-            nodeSelector:
-              node-role.kubernetes.io/control-plane: "true"
-  delegate_to: localhost
-  run_once: true
-              
+- name: Print patch csi-attacher output
+  ansible.builtin.debug:
+    var: patch_csi_attacher.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Patch csi-provisioner (2 replicas, control-plane nodes)
+  ansible.builtin.command:
+    cmd: >
+      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
+      -n longhorn-system patch deployment csi-provisioner
+      --type=strategic
+      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+  register: patch_csi_provisioner
+  when: inventory_hostname in groups.control1
+
+- name: Print patch csi-provisioner output
+  ansible.builtin.debug:
+    var: patch_csi_provisioner.stdout_lines
+  when: inventory_hostname in groups.control1
+
 - name: Ensure Longhorn Manager PDB
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    state: present
-    definition:
-      apiVersion: policy/v1
-      kind: PodDisruptionBudget
-      metadata:
-        name: longhorn-manager-pdb
-        namespace: longhorn-system
-      spec:
-        minAvailable: 1
-        selector:
-          matchLabels:
-            app: longhorn-manager
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: longhorn-manager-pdb
+      namespace: longhorn-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          app: longhorn-manager
+    EOF
+  register: ensure_longhorn_manager
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure Longhorn Manager PDB output
+  ansible.builtin.debug:
+    var: ensure_longhorn_manager.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Ensure Longhorn CSI Plugin PDB
-  kubernetes.core.k8s:
-    kubeconfig: "{{ ansible_local_kubeconfig }}"
-    validate_certs: false
-    state: present
-    definition:
-      apiVersion: policy/v1
-      kind: PodDisruptionBudget
-      metadata:
-        name: longhorn-csi-pdb
-        namespace: longhorn-system
-      spec:
-        minAvailable: 1
-        selector:
-          matchLabels:
-            app: longhorn-csi-plugin
-  delegate_to: localhost
-  run_once: true
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: longhorn-csi-pdb
+      namespace: longhorn-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          app: longhorn-csi-plugin
+    EOF
+  register: ensure_longhorn_csi_plugin
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure Longhorn CSI Plugin PDB output
+  ansible.builtin.debug:
+    var: ensure_longhorn_csi_plugin.stdout_lines
+  when: inventory_hostname in groups.control1
 
 - name: Get kubectl get pod --all-namespaces
   ansible.builtin.command:

@@ -19,7 +19,7 @@ ansible_user_publickey: ~/.ssh/id_ed25519.pub
 ansible_local_kubeconfig: ~/.kube/config
 
 block_device: /dev/vda
-kafka_disk_size_gib: 50
+kafka_disk_size_gib: 55
 
 #dns1: 8.8.8.8
 #dns2: 8.8.4.4
@@ -52,9 +52,9 @@ flannel_interface: eth0
 
 
 control_plane_ips:
-  - 212.227.49.96
-  - 85.215.180.60
-  - 212.132.120.239
+  - 217.154.222.120
+  - 217.154.222.123
+  - 217.154.222.124
 
 worker_ips:
   - 87.106.133.169
@@ -83,8 +83,8 @@ api_city: Berlin
 mqtt_fqdn: mqtt.envsensor.net
 mqtt_hostname: mqtt
 mqtt_domain: envsensor.net
-mqtt_ipv4addr: 217.154.243.85
-mqtt_ipv6addr: 2a01:239:2b7:3300::1
+mqtt_ipv4addr: 85.215.180.60
+mqtt_ipv6addr: 2a01:239:343:9d00::1
 mqtt_city: Berlin
 
 lb1_fqdn: lb.berlin.envsensor.net
@@ -97,22 +97,22 @@ lb1_city: Berlin
 c1_fqdn: control1.berlin.envsensor.net
 c1_hostname: control1
 c1_domain: berlin.envsensor.net
-c1_ipv4addr: 212.227.49.96
-c1_ipv6addr: 2a01:239:20e:ab00::1
+c1_ipv4addr: 217.154.222.120
+c1_ipv6addr: 2a01:239:293:d900::1
 c1_city: Berlin
 
 c2_fqdn: control2.berlin.envsensor.net
 c2_hostname: control2
 c2_domain: berlin.envsensor.net
-c2_ipv4addr: 85.215.180.60
-c2_ipv6addr: 2a01:239:343:9d00::1
+c2_ipv4addr: 217.154.222.123
+c2_ipv6addr: 2a01:239:2a5:1100::1
 c2_city: Berlin
 
 c3_fqdn: control3.berlin.envsensor.net
 c3_hostname: control3
 c3_domain: berlin.envsensor.net
-c3_ipv4addr: 212.132.120.239
-c3_ipv6addr: 2a01:239:388:8100::1
+c3_ipv4addr: 217.154.222.124
+c3_ipv6addr: 2a01:239:2a5:7e00::1
 c3_city: Berlin
 
 w1_fqdn: worker1.berlin.envsensor.net

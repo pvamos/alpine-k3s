@@ -15,6 +15,13 @@
     upgrade: true
     update_cache: true
 
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: Pause for 5 seconds
+  ansible.builtin.pause:
+    seconds: 5
+
 - name: Reboot the host after apk upgrade
   reboot:
     msg: "Rebooting after apk upgrade"
