@@ -108,20 +108,11 @@
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Patch longhorn-ui (2 replicas, control-plane nodes)
-  ansible.builtin.command:
-    cmd: >
-      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
-      -n longhorn-system patch deployment longhorn-ui
-      --type=strategic
-      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
-  register: patch_longhorn_ui
-  when: inventory_hostname in groups.control1
-
-- name: Print patch longhorn-ui output
-  ansible.builtin.debug:
-    var: patch_longhorn_ui.stdout_lines
-  when: inventory_hostname in groups.control1
+# Longhorn v1.8.x does not support setting nodeSelector or tolerations for individual CSI sidecars
+# (e.g., csi-attacher, csi-provisioner, csi-resizer and csi-snapshotter) via values.yaml.
+# This is a known limitation documented in # GitHub issue #2664.
+# (Setting this for longhornManager, longhornUI and longhornDriver works.)
+# As a workaround, use kubectl strategic merge patches post-install to set these:
 
 - name: Patch csi-attacher (2 replicas, control-plane nodes)
   ansible.builtin.command:
@@ -129,7 +120,7 @@
       /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
       -n longhorn-system patch deployment csi-attacher
       --type=strategic
-      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+      -p '{"spec":{"replicas":2,"template":{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","operator":"Exists","effect":"NoSchedule"},{"key":"CriticalAddonsOnly","operator":"Exists","effect":"NoSchedule"}],"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
   register: patch_csi_attacher
   when: inventory_hostname in groups.control1
 
@@ -144,13 +135,43 @@
       /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
       -n longhorn-system patch deployment csi-provisioner
       --type=strategic
-      -p '{"spec":{"replicas":2,"template":{"spec":{"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+      -p '{"spec":{"replicas":2,"template":{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","operator":"Exists","effect":"NoSchedule"},{"key":"CriticalAddonsOnly","operator":"Exists","effect":"NoSchedule"}],"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
   register: patch_csi_provisioner
   when: inventory_hostname in groups.control1
 
 - name: Print patch csi-provisioner output
   ansible.builtin.debug:
     var: patch_csi_provisioner.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Patch csi-resizer (2 replicas, control-plane nodes)
+  ansible.builtin.command:
+    cmd: >
+      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
+      -n longhorn-system patch deployment csi-resizer
+      --type=strategic
+      -p '{"spec":{"replicas":2,"template":{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","operator":"Exists","effect":"NoSchedule"},{"key":"CriticalAddonsOnly","operator":"Exists","effect":"NoSchedule"}],"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+  register: patch_csi_resizer
+  when: inventory_hostname in groups.control1
+
+- name: Print patch csi-resizer output
+  ansible.builtin.debug:
+    var: patch_csi_resizer.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Patch csi-snapshotter (2 replicas, control-plane nodes)
+  ansible.builtin.command:
+    cmd: >
+      /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml
+      -n longhorn-system patch deployment csi-snapshotter
+      --type=strategic
+      -p '{"spec":{"replicas":2,"template":{"spec":{"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"},{"key":"node-role.kubernetes.io/master","operator":"Exists","effect":"NoSchedule"},{"key":"CriticalAddonsOnly","operator":"Exists","effect":"NoSchedule"}],"nodeSelector":{"node-role.kubernetes.io/control-plane":"true"}}}}}'
+  register: patch_csi_snapshotter
+  when: inventory_hostname in groups.control1
+
+- name: Print patch csi-snapshotter output
+  ansible.builtin.debug:
+    var: patch_csi_snapshotter.stdout_lines
   when: inventory_hostname in groups.control1
 
 - name: Ensure Longhorn Manager PDB
