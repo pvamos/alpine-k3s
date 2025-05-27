@@ -200,7 +200,7 @@ csi:
   snapshotterReplicaCount: "2"
 # Longhorn v1.8.x does not support setting nodeSelector or tolerations for individual CSI sidecars
 # (e.g., csi-attacher, csi-provisioner, csi-resizer and csi-snapshotter) via values.yaml.
-# This is a known limitation documented in # GitHub issue #2664.
+# This is a known limitation.
 # (Setting this for longhornManager, longhornUI and longhornDriver works.)
 # As a workaround, use kubectl strategic merge patches post-install to set these:
   # attacher:
