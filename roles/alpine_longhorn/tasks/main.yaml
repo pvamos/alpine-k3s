@@ -244,21 +244,6 @@
     var: get_pods.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Pause for 60 seconds
-  ansible.builtin.pause:
-    seconds: 60
-
-- name: Get kubectl get pod --all-namespaces
-  ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
-  register: get_pods
-  when: inventory_hostname in groups.control1
-
-- name: Print kubectl get po --all-namespaces output
-  ansible.builtin.debug:
-    var: get_pods.stdout_lines
-  when: inventory_hostname in groups.control1
-
 - name: Get kubectl get all -n longhorn-system
   ansible.builtin.command:
     cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get all -n longhorn-system -owide
