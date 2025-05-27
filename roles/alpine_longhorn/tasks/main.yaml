@@ -112,7 +112,7 @@
 # (e.g., csi-attacher, csi-provisioner, csi-resizer and csi-snapshotter) via values.yaml.
 # This is a known limitation documented in # GitHub issue #2664.
 # (Setting this for longhornManager, longhornUI and longhornDriver works.)
-# As a workaround, use kubectl strategic merge patches post-install to set these:
+# As a workaround, use kubectl strategic merge patches post-install to set these.
 
 - name: Patch csi-attacher (2 replicas, control-plane nodes)
   ansible.builtin.command:

@@ -198,6 +198,63 @@ csi:
   resizerReplicaCount: "2"
   # -- Replica count of the CSI Snapshotter. When unspecified, Longhorn uses the default value ("3").
   snapshotterReplicaCount: "2"
+# Longhorn v1.8.x does not support setting nodeSelector or tolerations for individual CSI sidecars
+# (e.g., csi-attacher, csi-provisioner, csi-resizer and csi-snapshotter) via values.yaml.
+# This is a known limitation documented in # GitHub issue #2664.
+# (Setting this for longhornManager, longhornUI and longhornDriver works.)
+# As a workaround, use kubectl strategic merge patches post-install to set these:
+  # attacher:
+    # tolerations:
+      # - key: "node-role.kubernetes.io/control-plane"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "node-role.kubernetes.io/master"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "CriticalAddonsOnly"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+    # nodeSelector:
+      # node-role.kubernetes.io/control-plane: "true"
+  # provisioner:
+    # tolerations:
+      # - key: "node-role.kubernetes.io/control-plane"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "node-role.kubernetes.io/master"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "CriticalAddonsOnly"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+    # nodeSelector:
+      # node-role.kubernetes.io/control-plane: "true"
+  # resizer:
+    # tolerations:
+      # - key: "node-role.kubernetes.io/control-plane"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "node-role.kubernetes.io/master"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "CriticalAddonsOnly"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+    # nodeSelector:
+      # node-role.kubernetes.io/control-plane: "true"
+  # snapshotter:
+    # tolerations:
+      # - key: "node-role.kubernetes.io/control-plane"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "node-role.kubernetes.io/master"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+      # - key: "CriticalAddonsOnly"
+        # operator: "Exists"
+        # effect: "NoSchedule"
+    # nodeSelector:
+      # node-role.kubernetes.io/control-plane: "true"
 defaultSettings:
   # -- Setting that allows Longhorn to automatically attach a volume and create snapshots or backups when recurring jobs are run.
   allowRecurringJobWhileVolumeDetached: ~
