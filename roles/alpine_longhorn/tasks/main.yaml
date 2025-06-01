@@ -7,9 +7,9 @@
 - name: Test connection with ping
   ansible.builtin.ping:
 
-- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml packages
+- name: Install open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml,yq packages
   community.general.apk:
-    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml
+    name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml,yq
     state: present
 
 - name: Set local.d script to 'mount --make-rshared /'
@@ -57,11 +57,25 @@
     mode: '0640'
   when: inventory_hostname in groups.control1
 
-- name: Deploy Longhorn Helm chart v1.8.1 with values loaded from template
+# Longhorn v1.8.x does not support setting nodeSelector or tolerations for individual CSI sidecars
+# (e.g., csi-attacher, csi-provisioner, csi-resizer and csi-snapshotter) via values.yaml.
+# This is a known limitation documented in # GitHub issue #2664.
+# (Setting this for longhornManager, longhornUI and longhornDriver works.)
+# As a workaround, we use a Helm post-renderer script too patch these.
+# https://docs.ansible.com/ansible/latest/collections/kubernetes/core/helm_module.html#parameter-post_renderer
+# - name: Copy Helm post-renderer script
+  # copy:
+    # src: files/patch-csi.sh
+    # dest: /usr/local/bin/patch-csi.sh
+    # mode: '0755'
+  # when: inventory_hostname in groups.control1
+
+- name: Deploy Longhorn Helm chart v1.8.1 with values loaded from template and CSI post-renderer
   kubernetes.core.helm:
     name: longhorn
     chart_ref: longhorn/longhorn
     chart_version: 1.8.1
+    state: present
     create_namespace: true
     release_namespace: longhorn-system
     wait: true
@@ -70,6 +84,7 @@
       - /home/p/longhorn_values.yaml
     kubeconfig: /etc/rancher/k3s/k3s.yaml
   when: inventory_hostname in groups.control1
+#    post_renderer: /usr/local/bin/patch-csi.sh
 
 - name: Get kubectl get no
   ansible.builtin.command:
