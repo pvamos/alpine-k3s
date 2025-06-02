@@ -42,6 +42,10 @@
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
+- name: Pause for 10 seconds
+  ansible.builtin.pause:
+    seconds: 10
+
 - name: Add the Longhorn Helm charts repository on control1
   kubernetes.core.helm_repository:
     name: longhorn
@@ -63,14 +67,14 @@
 # (Setting this for longhornManager, longhornUI and longhornDriver works.)
 # As a workaround, we use a Helm post renderer script to set CSI_NODE_SELECTOR env var for longhorn-driver-deployer.
 # https://helm.sh/docs/topics/advanced/#post-rendering
-- name: Copy files/longhorn-post-renderer.sh to /home/p/longhorn-post-renderer.sh
-  copy:
-    src:  files/longhorn-post-renderer.sh
-    dest: /home/p/longhorn-post-renderer.sh
-    owner: root
-    group: root
-    mode: '0740'
-  when: inventory_hostname in groups.control1
+# - name: Copy files/longhorn-post-renderer.sh to /home/p/longhorn-post-renderer.sh
+  # copy:
+    # src:  files/longhorn-post-renderer.sh
+    # dest: /home/p/longhorn-post-renderer.sh
+    # owner: root
+    # group: root
+    # mode: '0740'
+  # when: inventory_hostname in groups.control1
 
 - name: Deploy Longhorn Helm chart v1.9.0 with values loaded from longhorn_values.yaml
   kubernetes.core.helm:
@@ -85,8 +89,8 @@
     values_files:
       - /home/p/longhorn_values.1.9.0.yaml
     kubeconfig: /etc/rancher/k3s/k3s.yaml
-    post_renderer: /home/p/longhorn-post-renderer.sh
   when: inventory_hostname in groups.control1
+#    post_renderer: /home/p/longhorn-post-renderer.sh
 
 - name: Get kubectl get no
   ansible.builtin.command:
