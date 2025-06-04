@@ -135,7 +135,7 @@ persistence:
   # -- mkfs parameters of the default Longhorn StorageClass.
   defaultMkfsParams: ""
   # -- Replica count of the default Longhorn StorageClass.
-  defaultClassReplicaCount: 2
+  defaultClassReplicaCount: 3
   # -- Data locality of the default Longhorn StorageClass. (Options: "disabled", "best-effort")
   defaultDataLocality: disabled
   # -- Reclaim policy that provides instructions for handling of a volume after its claim is released. (Options: "Retain", "Delete")
@@ -242,7 +242,7 @@ defaultSettings:
   supportBundleFailedHistoryLimit: ~
   # -- Taint or toleration for system-managed Longhorn components.
   # Specify values using a semicolon-separated list in `kubectl taint` syntax (Example: key1=value1:effect; key2=value2:effect).
-  taintToleration: "node-role.kubernetes.io/control-plane=:NoSchedule; node-role.kubernetes.io/master=:NoSchedule; CriticalAddonsOnly=:NoSchedule"
+  taintToleration: "node-role.kubernetes.io/control-plane:NoSchedule;node-role.kubernetes.io/master:NoSchedule;CriticalAddonsOnly:NoSchedule"
   # -- Node selector for system-managed Longhorn components.
   systemManagedComponentsNodeSelector: ~
   # -- PriorityClass for system-managed Longhorn components.
@@ -439,7 +439,8 @@ longhornDriver:
       operator: "Exists"
       effect: "NoSchedule"
   # -- Node selector for Longhorn Driver. Specify the nodes allowed to run Longhorn Driver.
-  nodeSelector: {}
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: "true"
   ## If you want to set node selector for Longhorn Driver Deployer Deployment, delete the `{}` in the line above
   ## and uncomment this example block
   #  label-key1: "label-value1"

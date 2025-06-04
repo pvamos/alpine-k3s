@@ -3,22 +3,7 @@
 # Declare variables to be passed into your templates.
 global:
   # -- Toleration for nodes allowed to run user-deployed components such as Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/kafka"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/storage"
-      operator: "Exists"
-      effect: "NoSchedule"
+  tolerations: []
   # -- Node selector for nodes allowed to run user-deployed components such as Longhorn Manager, Longhorn UI, and Longhorn Driver Deployer.
   nodeSelector: {}
   cattle:
@@ -52,37 +37,37 @@ image:
       # -- Repository for the Longhorn Engine image.
       repository: longhornio/longhorn-engine
       # -- Tag for the Longhorn Engine image.
-      tag: v1.8.1
+      tag: v1.9.0
     manager:
       # -- Repository for the Longhorn Manager image.
       repository: longhornio/longhorn-manager
       # -- Tag for the Longhorn Manager image.
-      tag: v1.8.1
+      tag: v1.9.0
     ui:
       # -- Repository for the Longhorn UI image.
       repository: longhornio/longhorn-ui
       # -- Tag for the Longhorn UI image.
-      tag: v1.8.1
+      tag: v1.9.0
     instanceManager:
       # -- Repository for the Longhorn Instance Manager image.
       repository: longhornio/longhorn-instance-manager
       # -- Tag for the Longhorn Instance Manager image.
-      tag: v1.8.1
+      tag: v1.9.0
     shareManager:
       # -- Repository for the Longhorn Share Manager image.
       repository: longhornio/longhorn-share-manager
       # -- Tag for the Longhorn Share Manager image.
-      tag: v1.8.1
+      tag: v1.9.0
     backingImageManager:
       # -- Repository for the Backing Image Manager image. When unspecified, Longhorn uses the default value.
       repository: longhornio/backing-image-manager
       # -- Tag for the Backing Image Manager image. When unspecified, Longhorn uses the default value.
-      tag: v1.8.1
+      tag: v1.9.0
     supportBundleKit:
       # -- Repository for the Longhorn Support Bundle Manager image.
       repository: longhornio/support-bundle-kit
       # -- Tag for the Longhorn Support Bundle Manager image.
-      tag: v0.0.52
+      tag: v0.0.55
   csi:
     attacher:
       # -- Repository for the CSI attacher image. When unspecified, Longhorn uses the default value.
@@ -141,11 +126,13 @@ persistence:
   # -- mkfs parameters of the default Longhorn StorageClass.
   defaultMkfsParams: ""
   # -- Replica count of the default Longhorn StorageClass.
-  defaultClassReplicaCount: 2
+  defaultClassReplicaCount: 3
   # -- Data locality of the default Longhorn StorageClass. (Options: "disabled", "best-effort")
   defaultDataLocality: disabled
   # -- Reclaim policy that provides instructions for handling of a volume after its claim is released. (Options: "Retain", "Delete")
   reclaimPolicy: Delete
+  # -- VolumeBindingMode controls when volume binding and dynamic provisioning should occur. (Options: "Immediate", "WaitForFirstConsumer") (Defaults to "Immediate")
+  volumeBindingMode: "Immediate"
   # -- Setting that allows you to enable live migration of a Longhorn volume from one node to another.
   migratable: false
   # -- Setting that disables the revision counter and thereby prevents Longhorn from tracking all write operations to a volume. When salvaging a volume, Longhorn uses properties of the volume-head-xxx.img file (the last file size and the last time the file was modified) to select the replica to be used for volume recovery.
@@ -194,20 +181,20 @@ preUpgradeChecker:
   upgradeVersionCheck: true
 csi:
   # -- kubelet root directory. When unspecified, Longhorn uses the default value.
-  kubeletRootDir: "/var/lib/kubelet"
+  kubeletRootDir: ~
   # -- Replica count of the CSI Attacher. When unspecified, Longhorn uses the default value ("3").
-  attacherReplicaCount: "2"
+  attacherReplicaCount: ~
   # -- Replica count of the CSI Provisioner. When unspecified, Longhorn uses the default value ("3").
-  provisionerReplicaCount: "2"
+  provisionerReplicaCount: ~
   # -- Replica count of the CSI Resizer. When unspecified, Longhorn uses the default value ("3").
-  resizerReplicaCount: "2"
+  resizerReplicaCount: ~
   # -- Replica count of the CSI Snapshotter. When unspecified, Longhorn uses the default value ("3").
-  snapshotterReplicaCount: "2"
+  snapshotterReplicaCount: ~
 defaultSettings:
   # -- Setting that allows Longhorn to automatically attach a volume and create snapshots or backups when recurring jobs are run.
   allowRecurringJobWhileVolumeDetached: ~
   # -- Setting that allows Longhorn to automatically create a default disk only on nodes with the label "node.longhorn.io/create-default-disk=true" (if no other disks exist). When this setting is disabled, Longhorn creates a default disk on each node that is added to the cluster.
-  createDefaultDiskLabeledNodes: true
+  createDefaultDiskLabeledNodes: ~
   # -- Default path for storing data on a host. The default value is "/var/lib/longhorn/".
   defaultDataPath: ~
   # -- Default data locality. A Longhorn volume has data locality if a local replica of the volume exists on the same node as the pod that is using the volume.
@@ -246,7 +233,7 @@ defaultSettings:
   supportBundleFailedHistoryLimit: ~
   # -- Taint or toleration for system-managed Longhorn components.
   # Specify values using a semicolon-separated list in `kubectl taint` syntax (Example: key1=value1:effect; key2=value2:effect).
-  taintToleration: "node-role.kubernetes.io/control-plane=:NoSchedule; node-role.kubernetes.io/master=:NoSchedule; CriticalAddonsOnly=:NoSchedule; node-role.kubernetes.io/kafka=:NoSchedule; node-role.kubernetes.io/storage=:NoSchedule"
+  taintToleration: ~
   # -- Node selector for system-managed Longhorn components.
   systemManagedComponentsNodeSelector: ~
   # -- PriorityClass for system-managed Longhorn components.
@@ -295,8 +282,12 @@ defaultSettings:
   guaranteedInstanceManagerCPU: ~
   # -- Setting that notifies Longhorn that the cluster is using the Kubernetes Cluster Autoscaler.
   kubernetesClusterAutoscalerEnabled: ~
-  # -- Setting that allows Longhorn to automatically delete an orphaned resource and the corresponding data (for example, stale replicas). Orphaned resources on failed or unknown nodes are not automatically cleaned up.
-  orphanAutoDeletion: ~
+  # -- Enables Longhorn to automatically delete orphaned resources and their associated data or processes (e.g., stale replicas). Orphaned resources on failed or unknown nodes are not automatically cleaned up. 
+  # You need to specify the resource types to be deleted using a semicolon-separated list (e.g., `replica-data;instance`). Available items are: `replica-data`, `instance`.
+  orphanResourceAutoDeletion: ~
+  # -- Specifies the wait time, in seconds, before Longhorn automatically deletes an orphaned Custom Resource (CR) and its associated resources.
+  # Note that if a user manually deletes an orphaned CR, the deletion occurs immediately and does not respect this grace period.
+  orphanResourceAutoDeletionGracePeriod: ~
   # -- Storage network for in-cluster traffic. When unspecified, Longhorn uses the Kubernetes cluster network.
   storageNetwork: ~
   # -- Flag that prevents accidental uninstallation of Longhorn.
@@ -320,15 +311,15 @@ defaultSettings:
   # -- Log levels that indicate the type and severity of logs in Longhorn Manager. The default value is "Info". (Options: "Panic", "Fatal", "Error", "Warn", "Info", "Debug", "Trace")
   logLevel: ~
   # -- Setting that allows you to specify a backup compression method.
-  backupCompressionMethod: "gzip"
+  backupCompressionMethod: ~
   # -- Maximum number of worker threads that can concurrently run for each backup.
   backupConcurrentLimit: ~
   # -- Maximum number of worker threads that can concurrently run for each restore operation.
   restoreConcurrentLimit: ~
   # -- Setting that allows you to enable the V1 Data Engine.
-  v1DataEngine: true
+  v1DataEngine: ~
   # -- Setting that allows you to enable the V2 Data Engine, which is based on the Storage Performance Development Kit (SPDK). The V2 Data Engine is an experimental feature and should not be used in production environments.
-  v2DataEngine: false
+  v2DataEngine: ~
   # -- Setting that allows you to configure maximum huge page size (in MiB) for the V2 Data Engine.
   v2DataEngineHugepageLimit: ~
   # -- Number of millicpus on each node to be reserved for each Instance Manager pod when the V2 Data Engine is enabled. The default value is "1250".
@@ -336,25 +327,31 @@ defaultSettings:
   # -- CPU cores on which the Storage Performance Development Kit (SPDK) target daemon should run. The SPDK target daemon is located in each Instance Manager pod. Ensure that the number of cores is less than or equal to the guaranteed Instance Manager CPUs for the V2 Data Engine. The default value is "0x1".
   v2DataEngineCPUMask: ~
   # -- Setting that allows scheduling of empty node selector volumes to any node.
-  allowEmptyNodeSelectorVolume: false
+  allowEmptyNodeSelectorVolume: ~
   # -- Setting that allows scheduling of empty disk selector volumes to any disk.
-  allowEmptyDiskSelectorVolume: false
+  allowEmptyDiskSelectorVolume: ~
   # -- Setting that allows Longhorn to periodically collect anonymous usage data for product improvement purposes. Longhorn sends collected data to the [Upgrade Responder](https://github.com/longhorn/upgrade-responder) server, which is the data source of the Longhorn Public Metrics Dashboard (https://metrics.longhorn.io). The Upgrade Responder server does not store data that can be used to identify clients, including IP addresses.
-  allowCollectingLonghornUsageMetrics: false
+  allowCollectingLonghornUsageMetrics: ~
   # -- Setting that temporarily prevents all attempts to purge volume snapshots.
-  disableSnapshotPurge: true
+  disableSnapshotPurge: ~
   # -- Maximum snapshot count for a volume. The value should be between 2 to 250
-  snapshotMaxCount: 50
+  snapshotMaxCount: ~
   # -- Setting that allows you to configure the log level of the SPDK target daemon (spdk_tgt) of the V2 Data Engine.
   v2DataEngineLogLevel: ~
   # -- Setting that allows you to configure the log flags of the SPDK target daemon (spdk_tgt) of the V2 Data Engine.
   v2DataEngineLogFlags: ~
+  # -- Setting allows you to enable or disable snapshot hashing and data integrity checking for the V2 Data Engine.
+  v2DataEngineSnapshotDataIntegrity: ~
   # -- Setting that freezes the filesystem on the root partition before a snapshot is created.
   freezeFilesystemForSnapshot: ~
   # -- Setting that automatically cleans up the snapshot when the backup is deleted.
-  autoCleanupSnapshotWhenDeleteBackup: true
+  autoCleanupSnapshotWhenDeleteBackup: ~
+  # -- Setting that automatically cleans up the snapshot after the on-demand backup is completed.
+  autoCleanupSnapshotAfterOnDemandBackupCompleted: ~
   # -- Setting that allows Longhorn to detect node failure and immediately migrate affected RWX volumes.
-  rwxVolumeFastFailover: true
+  rwxVolumeFastFailover: ~
+  # -- Enables automatic rebuilding of degraded replicas while the volume is detached. This setting only takes effect if the individual volume setting is set to `ignored` or `enabled`.
+  offlineRelicaRebuilding: ~
 # -- Setting that allows you to update the default backupstore.
 defaultBackupStore:
   # -- Endpoint used to access the default backupstore. (Options: "NFS", "CIFS", "AWS", "GCP", "AZURE")
@@ -381,28 +378,13 @@ longhornManager:
   # -- PriorityClass for Longhorn Manager.
   priorityClass: *defaultPriorityClassNameRef
   # -- Toleration for Longhorn Manager on nodes allowed to run Longhorn components.
-  tolerations:
+  tolerations: []
   ## If you want to set tolerations for Longhorn Manager DaemonSet, delete the `[]` in the line above
   ## and uncomment this example block
   # - key: "key"
   #   operator: "Equal"
   #   value: "value"
   #   effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/kafka"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/storage"
-      operator: "Exists"
-      effect: "NoSchedule"
   # -- Node selector for Longhorn Manager. Specify the nodes allowed to run Longhorn Manager.
   nodeSelector: {}
   ## If you want to set node selector for Longhorn Manager DaemonSet, delete the `{}` in the line above
@@ -422,28 +404,13 @@ longhornDriver:
   # -- PriorityClass for Longhorn Driver.
   priorityClass: *defaultPriorityClassNameRef
   # -- Toleration for Longhorn Driver on nodes allowed to run Longhorn components.
-  tolerations:
+  tolerations: []
   ## If you want to set tolerations for Longhorn Driver Deployer Deployment, delete the `[]` in the line above
   ## and uncomment this example block
   # - key: "key"
   #   operator: "Equal"
   #   value: "value"
   #   effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/master"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "CriticalAddonsOnly"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/kafka"
-      operator: "Exists"
-      effect: "NoSchedule"
-    - key: "node-role.kubernetes.io/storage"
-      operator: "Exists"
-      effect: "NoSchedule"
   # -- Node selector for Longhorn Driver. Specify the nodes allowed to run Longhorn Driver.
   nodeSelector: {}
   ## If you want to set node selector for Longhorn Driver Deployer Deployment, delete the `{}` in the line above
@@ -455,11 +422,21 @@ longhornUI:
   replicas: 2
   # -- PriorityClass for Longhorn UI.
   priorityClass: *defaultPriorityClassNameRef
+  # -- Affinity for Longhorn UI pods. Specify the affinity you want to use for Longhorn UI.
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - longhorn-ui
+            topologyKey: kubernetes.io/hostname
   # -- Toleration for Longhorn UI on nodes allowed to run Longhorn components.
-  tolerations:
-    - key: "node-role.kubernetes.io/control-plane"
-      operator: "Exists"
-      effect: "NoSchedule"
+  tolerations: []
   ## If you want to set tolerations for Longhorn UI Deployment, delete the `[]` in the line above
   ## and uncomment this example block
   # - key: "key"
@@ -467,12 +444,11 @@ longhornUI:
   #   value: "value"
   #   effect: "NoSchedule"
   # -- Node selector for Longhorn UI. Specify the nodes allowed to run Longhorn UI.
-  nodeSelector:
+  nodeSelector: {}
   ## If you want to set node selector for Longhorn UI Deployment, delete the `{}` in the line above
   ## and uncomment this example block
   #  label-key1: "label-value1"
   #  label-key2: "label-value2"
-    node-role.kubernetes.io/control-plane: "true"
 ingress:
   # -- Setting that allows Longhorn to generate ingress records for the Longhorn UI service.
   enabled: false
@@ -559,3 +535,5 @@ openshift:
     proxy: 8443
 # -- Setting that allows Longhorn to generate code coverage profiles.
 enableGoCoverDir: false
+# -- Add extra objects manifests
+extraObjects: []
