@@ -1,0 +1,16 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+    dashboard:
+      enabled: true
+    deployment:
+      replicas: 2
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"

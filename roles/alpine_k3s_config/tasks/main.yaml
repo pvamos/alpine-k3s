@@ -302,80 +302,61 @@
     var: kubectl_taint_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Patch CoreDNS deployment (2 replicas, control-plane nodes)
-  ansible.builtin.shell: |
-    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment coredns \
-      -n kube-system \
-      --type=strategic \
-      -p '{
-        "spec": {
-          "replicas": 2,
-          "template": {
-            "spec": {
-              "nodeSelector": {
-                "node-role.kubernetes.io/control-plane": "true"
-              }
-            }
-          }
-        }
-      }'
-  register: kubectl_patch_output
-  when: inventory_hostname in groups.control1
+- name: Copy files/traefik-config.yaml from ansible host to /var/lib/rancher/k3s/server/manifests/traefik-config.yaml on control nodes
+  ansible.builtin.copy:
+    dest: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+    src: files/traefik-config.yaml
+    owner: root
+    group: root
+    mode: '0600'
+  when: inventory_hostname in groups.controlplane
 
-- name: Print Patch CoreDNS deployment output
-  ansible.builtin.debug:
-    var: kubectl_patch_output.stdout_lines
-  when: inventory_hostname in groups.control1
+- name: Touch traefik-config.yaml to trigger k3s reapply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
+  
+- name: Set replicas to 2 in metrics-server deployment
+  replace:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    regexp: '^(  )#?\s*replicas:.*$'
+    replace: '\1replicas: 2'
+  when: inventory_hostname in groups.controlplane
 
-- name: Patch Traefik deployment (2 replicas, control-plane nodes)
-  ansible.builtin.shell: |
-    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment traefik \
-      -n kube-system \
-      --type=strategic \
-      -p '{
-        "spec": {
-          "replicas": 2,
-          "template": {
-            "spec": {
-              "nodeSelector": {
-                "node-role.kubernetes.io/control-plane": "true"
-              }
-            }
-          }
-        }
-      }'
-  register: kubectl_patch_output
-  when: inventory_hostname in groups.control1
+- name: Replace nodeSelector with control-plane only
+  replace:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    regexp: '(\s*)nodeSelector:\s*\n\1\s*[^\n]+\n'
+    replace: '\1nodeSelector:\n\1  node-role.kubernetes.io/control-plane: "true"'
+  when: inventory_hostname in groups.controlplane
 
-- name: Print Patch Traefik deployment output
-  ansible.builtin.debug:
-    var: kubectl_patch_output.stdout_lines
-  when: inventory_hostname in groups.control1
+- name: Touch metrics-server/metrics-server-deployment.yaml to trigger k3s reapply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
 
-- name: Patch Metrics Server deployment (2 replicas, control-plane nodes)
-  ansible.builtin.shell: |
-    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml patch deployment metrics-server \
-      -n kube-system \
-      --type=strategic \
-      -p '{
-        "spec": {
-          "replicas": 2,
-          "template": {
-            "spec": {
-              "nodeSelector": {
-                "node-role.kubernetes.io/control-plane": "true"
-              }
-            }
-          }
-        }
-      }'
-  register: kubectl_patch_output
-  when: inventory_hostname in groups.control1
+- name: Ensure CoreDNS has 2 replicas
+  ansible.builtin.blockinfile:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    insertafter: '^spec:$'
+    block: |
+      replicas: 2
+  when: inventory_hostname in groups.controlplane
 
-- name: Print Patch Metrics Server deployment output
-  ansible.builtin.debug:
-    var: kubectl_patch_output.stdout_lines
-  when: inventory_hostname in groups.control1
+- name: Replace CoreDNS nodeSelector key with control-plane role
+  ansible.builtin.replace:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    regexp: '^(\s*)kubernetes\.io/os:\s*linux$'
+    replace: '\1node-role.kubernetes.io/control-plane: "true"'
+  when: inventory_hostname in groups.controlplane
+
+- name: Touch coredns.yaml to trigger k3s reapply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
 
 - name: Ensure CoreDNS PDB
   ansible.builtin.shell: |

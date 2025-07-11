@@ -42,9 +42,21 @@
 - name: Allow incoming SSH on port {{ ansible_port }}
   ansible.builtin.command: "/usr/sbin/ufw allow {{ ansible_port }}/tcp comment 'Allow incoming SSH on port {{ ansible_port }}'"
 
-- name: Allow API access from HAProxy (on controlplane nodes)
+- name: Allow k8s API access from HAProxy (on controlplane nodes)
   ansible.builtin.command: "/usr/sbin/ufw allow from {{ haproxy_api }} to any port 6443 proto tcp comment 'Allow API access from HAProxy'"
   when: node_role == 'controlplane'
+
+- name: Allow http access from HAProxy (on controlplane nodes)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ haproxy_api }} to any port 80 proto tcp comment 'Allow API access from HAProxy'"
+  when: node_role == 'controlplane'
+
+- name: Allow https access from HAProxy (on controlplane nodes)
+  ansible.builtin.command: "/usr/sbin/ufw allow from {{ haproxy_api }} to any port 443 proto tcp comment 'Allow API access from HAProxy'"
+  when: node_role == 'controlplane'
+
+# - name: Allow traefik access from HAProxy (on controlplane nodes)
+  # ansible.builtin.command: "/usr/sbin/ufw allow from {{ haproxy_api }} to any port 9000 proto tcp comment 'Allow API access from HAProxy'"
+  # when: node_role == 'controlplane'
 
 - name: Allow Kubernetes API (6443) from worker nodes (on controlplane nodes)
   ansible.builtin.command: "/usr/sbin/ufw allow from {{ item }} to any port 6443 proto tcp comment 'Allow worker to access API'"
