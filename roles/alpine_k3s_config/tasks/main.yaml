@@ -317,42 +317,45 @@
     state: touch
   when: inventory_hostname in groups.controlplane
   
-- name: Set replicas to 2 in metrics-server deployment
-  replace:
+- name: Insert replicas: 2 if missing in metrics-server deployment
+  ansible.builtin.blockinfile:
     path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
-    regexp: '^(  )#?\s*replicas:.*$'
-    replace: '\1replicas: 2'
+    block: |
+      replicas: 2
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - REPLICAS"
+    insertafter: '^spec:\s*$'
   when: inventory_hostname in groups.controlplane
 
-- name: Replace nodeSelector with control-plane only
-  replace:
+- name: Replace nodeSelector with control-plane label for metrics-server
+  ansible.builtin.replace:
     path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
-    regexp: '(\s*)nodeSelector:\s*\n\1\s*[^\n]+\n'
+    regexp: '^(\s*)nodeSelector:\s*\n\1\s*[^\n]+$'
     replace: '\1nodeSelector:\n\1  node-role.kubernetes.io/control-plane: "true"'
   when: inventory_hostname in groups.controlplane
 
-- name: Touch metrics-server/metrics-server-deployment.yaml to trigger k3s reapply
+- name: Touch metrics-server file to re-trigger manifest apply
   ansible.builtin.file:
     path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
     state: touch
   when: inventory_hostname in groups.controlplane
 
-- name: Ensure CoreDNS has 2 replicas
+- name: Insert replicas: 2 if missing in coredns deployment
   ansible.builtin.blockinfile:
     path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
-    insertafter: '^spec:$'
     block: |
       replicas: 2
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - REPLICAS"
+    insertafter: '^spec:\s*$'
   when: inventory_hostname in groups.controlplane
 
-- name: Replace CoreDNS nodeSelector key with control-plane role
+- name: Replace CoreDNS nodeSelector with control-plane only
   ansible.builtin.replace:
     path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
     regexp: '^(\s*)kubernetes\.io/os:\s*linux$'
     replace: '\1node-role.kubernetes.io/control-plane: "true"'
   when: inventory_hostname in groups.controlplane
 
-- name: Touch coredns.yaml to trigger k3s reapply
+- name: Touch CoreDNS manifest to trigger reapply
   ansible.builtin.file:
     path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
     state: touch
