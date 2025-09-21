@@ -524,7 +524,7 @@ ingress:
   enabled: true
   # -- IngressClass resource that contains ingress configuration, including the name of the Ingress controller.
   # ingressClassName can replace the kubernetes.io/ingress.class annotation used in earlier Kubernetes releases.
-  ingressClassName: treafik
+  ingressClassName: traefik
   # -- Hostname of the Layer 7 load balancer.
   host: longhorn.berlin.envsensor.net
   # -- Setting that allows you to enable TLS on ingress records.
