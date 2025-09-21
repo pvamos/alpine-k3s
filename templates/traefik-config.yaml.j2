@@ -4,10 +4,13 @@ metadata:
   name: traefik
   namespace: kube-system
 spec:
-  valuesContent: |-
+  valuesContent: |
     additionalArguments:
       - "--api.dashboard=true"
       - "--api.insecure=false"
+      # Trust X-Forwarded-* only from HAProxy VM(s)
+      - "--entryPoints.web.forwardedHeaders.trustedIPs={{ haproxy_ipv4 }}/32"
+      - "--entryPoints.websecure.forwardedHeaders.trustedIPs={{ haproxy_ipv4 }}/32"
     dashboard:
       enabled: true
     deployment:

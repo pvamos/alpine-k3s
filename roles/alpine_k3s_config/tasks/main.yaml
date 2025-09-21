@@ -302,10 +302,10 @@
     var: kubectl_taint_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Copy files/traefik-config.yaml from ansible host to /var/lib/rancher/k3s/server/manifests/traefik-config.yaml on control nodes
-  ansible.builtin.copy:
+- name: Render traefik HelmChartConfig with trustedIPs to /var/lib/rancher/k3s/server/manifests/traefik-config.yaml on control nodes
+  ansible.builtin.template:
+    src: templates/traefik-config.yaml.j2
     dest: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
-    src: files/traefik-config.yaml
     owner: root
     group: root
     mode: '0600'
@@ -316,7 +316,7 @@
     path: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
     state: touch
   when: inventory_hostname in groups.controlplane
-  
+
 - name: Insert replicas - 2 if missing in metrics-server deployment
   ansible.builtin.blockinfile:
     path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
