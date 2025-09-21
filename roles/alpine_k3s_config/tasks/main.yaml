@@ -317,7 +317,7 @@
     state: touch
   when: inventory_hostname in groups.controlplane
   
-- name: Insert replicas: 2 if missing in metrics-server deployment
+- name: Insert replicas - 2 if missing in metrics-server deployment
   ansible.builtin.blockinfile:
     path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
     block: |
@@ -339,7 +339,7 @@
     state: touch
   when: inventory_hostname in groups.controlplane
 
-- name: Insert replicas: 2 if missing in coredns deployment
+- name: Insert replicas - 2 if missing in coredns deployment
   ansible.builtin.blockinfile:
     path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
     block: |
