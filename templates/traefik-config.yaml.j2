@@ -8,9 +8,9 @@ spec:
     additionalArguments:
       - "--api.dashboard=true"
       - "--api.insecure=false"
-      # Trust X-Forwarded-* only from HAProxy VM(s)
-      - "--entryPoints.web.forwardedHeaders.trustedIPs={{ haproxy_lb1 }}/32"
-      - "--entryPoints.websecure.forwardedHeaders.trustedIPs={{ haproxy_lb1 }}/32"
+      # Trust X-Forwarded-* only from the HAProxy VMs
+      - "--entryPoints.web.forwardedHeaders.trustedIPs={{ [haproxy_lb1, haproxy_api, haproxy_mqtt] | map('regex_replace','^(.*)$','\\1/32') | join(',') }}"
+      - "--entryPoints.websecure.forwardedHeaders.trustedIPs={{ [haproxy_lb1, haproxy_api, haproxy_mqtt] | map('regex_replace','^(.*)$','\\1/32') | join(',') }}"
     dashboard:
       enabled: true
     deployment:
