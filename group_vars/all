@@ -63,7 +63,7 @@ worker_ips:
   - 217.154.207.87
 
 haproxy_api: 217.154.243.88
-haproxy_mqtt: 217.154.243.85
+haproxy_mqtt: 85.215.180.60
 haproxy_lb1: 194.164.62.184
 
 reg_fqdn: reg.envsensor.net
