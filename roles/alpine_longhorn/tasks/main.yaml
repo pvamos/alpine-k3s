@@ -12,18 +12,39 @@
     name: open-iscsi,lsblk,findmnt,blkid,nfs-utils,jq,helm,py3-setuptools,py3-pip,wireguard-tools,py3-yaml,yq
     state: present
 
-- name: Set local.d script to 'mount --make-rshared /'
+# Ensure OpenRC 'local' service is enabled so local.d scripts run at boot
+- name: Enable local service at default runlevel
+  command: rc-update add local default
+  args:
+    creates: /etc/runlevels/default/local
+
+# Provide a robust local.d script to enforce mount propagation each boot
+- name: Install mount propagation script
   copy:
-    dest: /etc/local.d/mount-make-rshared.start
+    dest: /etc/local.d/01-mount-rshared.start
     owner: root
     group: root
-    mode: '0751'
+    mode: '0755'
     content: |
-      #!/bin/bash
+      #!/bin/sh
+      # Ensure mount events from host propagate into containers
       /bin/mount --make-rshared /
 
-- name: Execute /bin/mount --make-rshared /
-  ansible.builtin.command: /bin/mount --make-rshared /
+      # Kubelet is its own mount on your nodes; flip it too
+      if [ -d /var/lib/kubelet ]; then
+        /bin/mount --make-rshared /var/lib/kubelet || true
+      fi
+
+      # Longhorn (optional but recommended)
+      if [ -d /var/lib/longhorn ] || /bin/mkdir -p /var/lib/longhorn; then
+        # Bind to itself so it becomes a mount point if it isn't already
+        /bin/mountpoint -q /var/lib/longhorn || /bin/mount --bind /var/lib/longhorn /var/lib/longhorn || true
+        /bin/mount --make-rshared /var/lib/longhorn || true
+      fi
+
+# 6) Apply immediately without reboot
+- name: Run local scripts now
+  command: rc-service local restart
 
 - name: Enable and start service iscsid
   ansible.builtin.service:
