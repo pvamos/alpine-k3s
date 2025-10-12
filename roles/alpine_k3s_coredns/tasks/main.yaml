@@ -2,7 +2,7 @@
 # Uses vars from group_vars/all (see below). We still add safe fallbacks with `default`
 # so a first run won’t explode if you forget one.
 
-- name: "Patch CoreDNS to desired replicas and soft anti-affinity"
+- name: "Patch CoreDNS: replicas, anti-affinity, control-plane pin + tolerations"
   ansible.builtin.shell: |
     set -e
     cat > /tmp/coredns_patch.json <<'EOF'
@@ -20,13 +20,25 @@
                       "podAffinityTerm": {
                         "topologyKey": "kubernetes.io/hostname",
                         "labelSelector": {
-                          "matchLabels": alpine_k3s_coredns_label_selector | default({'k8s-app': 'kube-dns'})
+                          "matchLabels": alpine_k3s_coredns_label_selector | default({"k8s-app": "kube-dns"})
                         }
                       }
                     }
                   ]
+                },
+                "nodeAffinity": {
+                  "requiredDuringSchedulingIgnoredDuringExecution": {
+                    "nodeSelectorTerms": [
+                      { "matchExpressions": [ { "key": "node-role.kubernetes.io/control-plane", "operator": "Exists" } ] },
+                      { "matchExpressions": [ { "key": "node-role.kubernetes.io/master",        "operator": "Exists" } ] }
+                    ]
+                  }
                 }
-              }
+              },
+              "tolerations": [
+                { "key": "node-role.kubernetes.io/control-plane", "operator": "Exists", "effect": "NoSchedule" },
+                { "key": "node-role.kubernetes.io/master",        "operator": "Exists", "effect": "NoSchedule" }
+              ]
             }
           }
         }
