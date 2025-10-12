@@ -50,7 +50,6 @@ flannel_backend: vxlan
 egress_selector_mode: cluster
 flannel_interface: eth0
 
-
 control_plane_ips:
   - 217.154.222.120
   - 217.154.222.123
@@ -65,6 +64,25 @@ worker_ips:
 haproxy_api: 217.154.243.88
 haproxy_mqtt: 85.215.180.60
 haproxy_lb1: 194.164.62.184
+
+# Which control-plane host should run kubectl
+alpine_k3s_coredns_control_plane_host: control1
+
+# Kubeconfig path on that host
+alpine_k3s_coredns_kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+# Target objects
+alpine_k3s_coredns_namespace: kube-system
+alpine_k3s_coredns_deploy_name: coredns
+
+# Desired state
+alpine_k3s_coredns_replicas: 2
+alpine_k3s_coredns_pdb_name: coredns-pdb
+alpine_k3s_coredns_pdb_min_available: 1
+
+# Label selector for CoreDNS pods in k3s
+alpine_k3s_coredns_label_selector:
+  k8s-app: kube-dns
 
 reg_fqdn: reg.envsensor.net
 reg_hostname: reg

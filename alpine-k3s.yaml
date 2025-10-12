@@ -8,4 +8,5 @@
     - role: alpine_kernelparams
     - role: alpine_ufw
     - role: alpine_k3s_config
+    - role: alpine_k3s_coredns
     - role: alpine_longhorn

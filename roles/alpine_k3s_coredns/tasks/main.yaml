@@ -1,0 +1,86 @@
+---
+# Uses vars from group_vars/all (see below). We still add safe fallbacks with `default`
+# so a first run won’t explode if you forget one.
+
+- name: "Patch CoreDNS to desired replicas and soft anti-affinity"
+  ansible.builtin.shell: |
+    set -e
+    cat > /tmp/coredns_patch.json <<'EOF'
+    {{
+      {
+        "spec": {
+          "replicas": alpine_k3s_coredns_replicas | default(2),
+          "template": {
+            "spec": {
+              "affinity": {
+                "podAntiAffinity": {
+                  "preferredDuringSchedulingIgnoredDuringExecution": [
+                    {
+                      "weight": 100,
+                      "podAffinityTerm": {
+                        "topologyKey": "kubernetes.io/hostname",
+                        "labelSelector": {
+                          "matchLabels": alpine_k3s_coredns_label_selector | default({'k8s-app': 'kube-dns'})
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      } | to_nice_json
+    }}
+    EOF
+    /usr/local/bin/kubectl --kubeconfig {{ alpine_k3s_coredns_kubeconfig | default('/etc/rancher/k3s/k3s.yaml') }} \
+      -n {{ alpine_k3s_coredns_namespace | default('kube-system') }} \
+      patch deploy {{ alpine_k3s_coredns_deploy_name | default('coredns') }} \
+      --type=strategic --patch-file /tmp/coredns_patch.json
+    rm -f /tmp/coredns_patch.json
+  args:
+    executable: /bin/bash
+  register: coredns_patch
+  changed_when: "'patched' in (coredns_patch.stdout | default(''))"
+  failed_when: coredns_patch.rc != 0
+  when: inventory_hostname in groups.control1
+
+- name: Print CoreDNS patch output
+  ansible.builtin.debug:
+    var: coredns_patch.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: "Ensure CoreDNS PDB exists or is updated"
+  ansible.builtin.shell: |
+    set -e
+    cat > /tmp/coredns_pdb.yaml <<'EOF'
+    {{
+      {
+        "apiVersion": "policy/v1",
+        "kind": "PodDisruptionBudget",
+        "metadata": {
+          "name": alpine_k3s_coredns_pdb_name | default("coredns-pdb"),
+          "namespace": alpine_k3s_coredns_namespace | default("kube-system")
+        },
+        "spec": {
+          "minAvailable": alpine_k3s_coredns_pdb_min_available | default(1),
+          "selector": {
+            "matchLabels": alpine_k3s_coredns_label_selector | default({"k8s-app": "kube-dns"})
+          }
+        }
+      } | to_nice_yaml
+    }}
+    EOF
+    /usr/local/bin/kubectl --kubeconfig {{ alpine_k3s_coredns_kubeconfig | default('/etc/rancher/k3s/k3s.yaml') }} apply -f /tmp/coredns_pdb.yaml
+    rm -f /tmp/coredns_pdb.yaml
+  args:
+    executable: /bin/bash
+  register: pdb_apply
+  changed_when: "'configured' in (pdb_apply.stdout | default('')) or 'created' in (pdb_apply.stdout | default(''))"
+  failed_when: pdb_apply.rc != 0
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure CoreDNS PDB exists or is updated output
+  ansible.builtin.debug:
+    var: pdb_apply.stdout_lines
+  when: inventory_hostname in groups.control1
