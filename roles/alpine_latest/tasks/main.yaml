@@ -10,6 +10,14 @@
     src:  files/repositories.latest
     dest: /etc/apk/repositories
 
+- name: Run /sbin/apk update
+  command: /sbin/apk update
+  register: apk_update_result
+
+- name: Print /sbin/apk update output
+  ansible.builtin.debug:
+    var: apk_update_result.stdout_lines
+
 - name: Upgrade all installed apk packages to the latest versions
   community.general.apk:
     upgrade: true
