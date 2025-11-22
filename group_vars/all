@@ -60,6 +60,7 @@ worker_ips:
   - 217.154.87.235
   - 87.106.144.35
   - 217.154.207.87
+  - 217.154.85.64
 
 haproxy_api: 217.154.243.88
 haproxy_mqtt: 85.215.180.60
@@ -160,3 +161,10 @@ w4_domain: berlin.envsensor.net
 w4_ipv4addr: 217.154.207.87
 w4_ipv6addr: 2a01:239:392:a100::1
 w4_city: Berlin
+
+w5_fqdn: worker5.berlin.envsensor.net
+w5_hostname: worker5
+w5_domain: berlin.envsensor.net
+w5_ipv4addr: 217.154.85.64
+w5_ipv6addr: 2a01:239:42e:3b00::1
+w5_city: Berlin

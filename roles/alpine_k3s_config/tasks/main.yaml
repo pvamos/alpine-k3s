@@ -125,6 +125,17 @@
     city: "{{ w4_city }}"
   when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w4_ipv4addr
 
+- name: Set host variables for worker5.berlin.envsensor.net
+  set_fact:
+    fqdnfromip: "{{ w5_fqdn }}"
+    hostnamefromip: "{{ w5_hostname }}"
+    domainfromip: "{{ w5_domain }}"
+    ipv4addr: "{{ w5_ipv4addr }}"
+    ipv6addr: "{{  w5_ipv6addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w5_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w5_ipv4addr
+
 - name: Print host variables
   debug:
     msg: "fqdnfromip: {{ fqdnfromip }} hostnamefromip: {{ hostnamefromip }} domainfromip: {{ domainfromip }} city: {{ city }} macaddress: {{ macaddress }} ipv4addr: {{ ipv4addr }} ipv6addr: {{ ipv6addr }}"
@@ -427,24 +438,24 @@
     var: kubectl_apply_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Run kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true
   ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true --overwrite
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true --overwrite
   register: kubectl_label_output
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/worker=true output
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true output
   ansible.builtin.debug:
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
 
-- name: Run kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true
   ansible.builtin.command:
-    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true --overwrite
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true --overwrite
   register: kubectl_label_output
   when: inventory_hostname in groups.control1
 
-- name: Print kubectl label nodes worker1 worker2 worker3 worker4 node-role.kubernetes.io/kafka=true output
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true output
   ansible.builtin.debug:
     var: kubectl_label_output.stdout_lines
   when: inventory_hostname in groups.control1
