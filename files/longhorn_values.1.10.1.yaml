@@ -511,15 +511,15 @@ longhornUI:
             topologyKey: kubernetes.io/hostname
   # -- Toleration for Longhorn UI on nodes allowed to run Longhorn components.
   tolerations:
-  - key: node-role.kubernetes.io/control-plane
+  - key: node.kubernetes.io/not-ready
     operator: Exists
-    effect: NoSchedule
-  - key: node-role.kubernetes.io/master
+    effect: NoExecute
+    tolerationSeconds: 300
+  - key: node.kubernetes.io/unreachable
     operator: Exists
-    effect: NoSchedule
-  - key: CriticalAddonsOnly
-    operator: Exists
-    effect: NoSchedule
+    effect: NoExecute
+    tolerationSeconds: 300
+
   ## If you want to set tolerations for Longhorn UI Deployment, delete the `[]` in the line above
   ## and uncomment this example block
   # - key: "key"
@@ -528,7 +528,7 @@ longhornUI:
   #   effect: "NoSchedule"
   # -- Node selector for Longhorn UI. Specify the nodes allowed to run Longhorn UI.
   nodeSelector:
-    node-role.kubernetes.io/control-plane: 'true'
+    node-role.kubernetes.io/worker: 'true'
   ## If you want to set node selector for Longhorn UI Deployment, delete the `{}` in the line above
   ## and uncomment this example block
   #  label-key1: "label-value1"

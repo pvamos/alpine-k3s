@@ -39,6 +39,7 @@ loadbalancer_port: 6443
 loadbalancer_node_port: 6443
 loadbalancer_fqdn: k8s.berlin.envsensor.net
 
+k3s_version: "v1.34.2+k3s1"
 k3s_token: 5b07d1e824f630cc1f0ac8683d347103
 
 cluster_cidr: "10.42.0.0/16"

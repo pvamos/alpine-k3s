@@ -141,7 +141,7 @@
     msg: "fqdnfromip: {{ fqdnfromip }} hostnamefromip: {{ hostnamefromip }} domainfromip: {{ domainfromip }} city: {{ city }} macaddress: {{ macaddress }} ipv4addr: {{ ipv4addr }} ipv6addr: {{ ipv6addr }}"
 
 - name: Initialialize control1 with get.k3s.io script
-  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
   register: control1_output
   when: inventory_hostname in groups.control1
 
@@ -155,7 +155,7 @@
     seconds: 30
 
 - name: Initialialize control2 and control3 with get.k3s.io script
-  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --server https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --server https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
   register: control23_output
   when: inventory_hostname in groups.control23
 
@@ -169,7 +169,7 @@
     seconds: 30
 
 - name: Initialialize workers with get.k3s.io script
-  ansible.builtin.raw: "/usr/bin/curl -sfL https://get.k3s.io | K3S_URL=https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} K3S_TOKEN={{ k3s_token }} /bin/sh -s - agent --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-iface {{ flannel_interface }}"
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | K3S_URL=https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} K3S_TOKEN={{ k3s_token }} /bin/sh -s - agent --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-iface {{ flannel_interface }}"
   register: worker_output
   when: inventory_hostname in groups.worker
 

@@ -36,11 +36,12 @@
 - name: Modprobe br_netfilter
   command: /sbin/modprobe br_netfilter
 
-- name: Set rc_cgroup_mode to unified
+# Raise max open files for services started by OpenRC, including k3s-agent (containerd -> pods)
+- name: Set rc_ulimit to 524288 max open files for services started by OpenRC, including k3s-agent
   lineinfile:
     path: /etc/rc.conf
-    regexp: '^#rc_cgroup_mode='
-    line: 'rc_cgroup_mode="unified"'
+    regexp: '^#rc_ulimit='
+    line: 'rc_ulimit="-n 524288 -Hn 524288"'
 
 - name: Set default_kernel_opts for cgroup v2
   lineinfile:
