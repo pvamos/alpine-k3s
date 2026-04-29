@@ -1,0 +1,220 @@
+---
+# The variables file used by the playbooks on all hosts.
+# These don't have to be explicitly imported by vars_files: they are autopopulated.
+
+ansible_python_interpreter: /usr/bin/python3
+#timeout: 120
+ansible-ssh-timeout: 120
+ansible_connection: ssh
+ansible_become: yes
+ansible_become_method: sudo
+ansible_port: 22
+ansible_user: alpine-admin
+ansible_add_port: 22
+ansible_add_user: alpine-admin
+ansible_add_user_uid: 1001
+ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+ansible_user_publickey: ~/.ssh/id_ed25519.pub
+
+ansible_local_kubeconfig: "{{ lookup('env', 'HOME') }}/.kube/config"
+ansible_controller_workdir: "{{ playbook_dir }}"
+longhorn_values_remote_path: /tmp/longhorn_values.1.10.1.yaml
+
+block_device: /dev/sda
+kafka_disk_size_gib: 22.0
+
+#dns1: 8.8.8.8
+#dns2: 8.8.4.4
+#dns3: 2001:4860:4860::8888
+#dns4: 2001:4860:4860::8844
+
+dns1: 1.1.1.1
+dns2: 1.0.0.1
+dns_search: example.com
+
+vm_swappiness: 0
+vm_vfs_cache_pressure: 100
+
+loadbalancer_ipv4: 203.0.113.10
+loadbalancer_port: 6443
+loadbalancer_node_port: 6443
+loadbalancer_fqdn: k8s.example.com
+
+k3s_version: "v1.35.0+k3s1"
+
+k3s_token: CHANGE_ME_GENERATE_WITH_OPENSSL_RAND_HEX_32
+
+cluster_cidr: "10.42.0.0/16"
+service_cidr: "10.43.0.0/16"
+service_node_port_range: "30000-32767"
+cluster_dns: "10.43.0.10"
+
+flannel_backend: vxlan
+egress_selector_mode: cluster
+flannel_interface: eth0
+
+control_plane_ips:
+  - 203.0.113.11
+  - 203.0.113.12
+  - 203.0.113.13
+
+worker_ips:
+  - 203.0.113.21
+  - 203.0.113.22
+  - 203.0.113.23
+  - 203.0.113.24
+  - 203.0.113.25
+
+haproxy_api: 203.0.113.10
+haproxy_mqtt1: 203.0.113.31
+haproxy_mqtt2: 203.0.113.32
+haproxy_mqtt3: 203.0.113.33
+haproxy_lb1: 203.0.113.34
+
+# Which control-plane host should run kubectl
+alpine_k3s_coredns_control_plane_host: control1
+
+# Kubeconfig path on that host
+alpine_k3s_coredns_kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+# Target objects
+alpine_k3s_coredns_namespace: kube-system
+alpine_k3s_coredns_deploy_name: coredns
+
+# Desired state
+alpine_k3s_coredns_replicas: 2
+alpine_k3s_coredns_pdb_name: coredns-pdb
+alpine_k3s_coredns_pdb_min_available: 1
+
+# Label selector for CoreDNS pods in k3s
+alpine_k3s_coredns_label_selector:
+  k8s-app: kube-dns
+
+longhorn_namespace: longhorn-system
+
+longhorn_csi_controller_deployments:
+  - csi-attacher
+  - csi-provisioner
+  - csi-resizer
+  - csi-snapshotter
+
+longhorn_csi_controller_patch:
+  spec:
+    template:
+      spec:
+        nodeSelector:
+          node-role.kubernetes.io/control-plane: "true"   # keep as STRING
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
+          - key: node-role.kubernetes.io/master
+            operator: Exists
+            effect: NoSchedule
+          - key: CriticalAddonsOnly
+            operator: Exists
+            effect: NoSchedule
+
+# Common Longhorn storageclass settings
+longhorn_sc_common:
+  provisioner: driver.longhorn.io
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
+  volumeBindingMode: Immediate
+  parameters:
+    staleReplicaTimeout: "30"
+    fromBackup: ""
+    fsType: "ext4"
+    dataLocality: "disabled"
+    unmapMarkSnapChainRemoved: "ignored"
+    disableRevisionCounter: "true"
+    dataEngine: "v1"
+    backupTargetName: "default"
+
+# Desired replication-factor StorageClasses
+# Set exactly one to is_default: true (currently rf2)
+longhorn_rf_storageclasses:
+  - name: longhorn-rf1
+    replicas: "1"
+    is_default: false
+  - name: longhorn-rf2
+    replicas: "2"
+    is_default: true
+  - name: longhorn-rf3
+    replicas: "3"
+    is_default: false
+
+reg_fqdn: reg.example.com
+reg_hostname: reg
+reg_domain: example.com
+reg_ipv4addr: 203.0.113.40
+reg_ipv6addr: 2001:db8::40
+reg_city: Example-City
+
+
+api_fqdn: k8s.example.com
+api_hostname: k8s
+api_domain: example.com
+api_ipv4addr: 203.0.113.10
+api_ipv6addr: 2001:db8::10
+api_ipv6mask: /128
+api_ipv6_defaultgw: 2001:41d0:305:2100::1
+api_city: Example-City
+
+
+lb1_fqdn: lb1.example.com
+lb1_hostname: k8s
+lb1_domain: example.com
+lb1_ipv4addr: 203.0.114.10
+lb1_ipv6addr: 2001:db9::10
+lb1_city: Example-City
+
+
+c1_fqdn: control1.example.com
+c1_hostname: control1
+c1_domain: example.com
+c1_ipv4addr: 203.0.113.11
+c1_city: Example-City
+
+c2_fqdn: control2.example.com
+c2_hostname: control2
+c2_domain: example.com
+c2_ipv4addr: 203.0.113.12
+c2_city: Example-City
+
+c3_fqdn: control3.example.com
+c3_hostname: control3
+c3_domain: example.com
+c3_ipv4addr: 203.0.113.13
+c3_city: Example-City
+
+
+w1_fqdn: worker1.example.com
+w1_hostname: worker1
+w1_domain: example.com
+w1_ipv4addr: 203.0.113.21
+w1_city: Example-City
+
+w2_fqdn: worker2.example.com
+w2_hostname: worker2
+w2_domain: example.com
+w2_ipv4addr: 203.0.113.22
+w2_city: Example-City
+
+w3_fqdn: worker3.example.com
+w3_hostname: worker3
+w3_domain: example.com
+w3_ipv4addr: 203.0.113.23
+w3_city: Example-City
+
+w4_fqdn: worker4.example.com
+w4_hostname: worker4
+w4_domain: example.com
+w4_ipv4addr: 203.0.113.24
+w4_city: Example-City
+
+w5_fqdn: worker5.example.com
+w5_hostname: worker5
+w5_domain: example.com
+w5_ipv4addr: 203.0.113.25
+w5_city: Example-City

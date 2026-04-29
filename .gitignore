@@ -1,0 +1,51 @@
+# k3s / Kubernetes secrets
+node-token
+k3s.yaml
+*.kubeconfig
+kubeconfig
+.kube/
+
+# Ansible local/private data
+*.retry
+.ansible/
+facts_cache/
+ansible-vault-password*
+.vault-pass*
+
+# Private inventories and variables
+hosts.private
+inventory.private
+inventory/
+private/
+secrets/
+group_vars/private*
+host_vars/private*
+*.local.yaml
+*.local.yml
+private*.yaml
+private*.yml
+
+# Environment files
+.env
+.env.*
+
+# SSH keys and certificates
+id_rsa
+id_ed25519
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and generated output
+*.log
+logs/
+*.out
+*.tmp
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

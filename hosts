@@ -1,0 +1,18 @@
+[controlplane]
+control1.example.com ansible_host=203.0.113.11
+control2.example.com ansible_host=203.0.113.12
+control3.example.com ansible_host=203.0.113.13
+
+[control1]
+control1.example.com ansible_host=203.0.113.11
+
+[control23]
+control2.example.com ansible_host=203.0.113.12
+control3.example.com ansible_host=203.0.113.13
+
+[worker]
+worker1.example.com ansible_host=203.0.113.21
+worker2.example.com ansible_host=203.0.113.22
+worker3.example.com ansible_host=203.0.113.23
+worker4.example.com ansible_host=203.0.113.24
+worker5.example.com ansible_host=203.0.113.25

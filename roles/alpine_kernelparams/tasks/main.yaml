@@ -1,0 +1,93 @@
+---
+
+# Alpine linux kernel parameters configuration
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Set net forwarding kernel params
+  copy:
+    dest: /etc/sysctl.d/forwarding.conf
+    content: |
+      net.ipv4.ip_forward = 1
+      net.bridge.bridge-nf-call-iptables = 1
+
+- name: Apply kernel parameter changes
+  command: /sbin/sysctl -p /etc/sysctl.d/forwarding.conf
+
+- name: Set needed kernel modules in /etc/modules-load.d/k3s.conf
+  copy:
+    dest: /etc/modules-load.d/k3s.conf
+    content: |
+      br_netfilter
+      iptable_nat
+      iptable_filter
+      nf_conntrack
+      overlay
+      dm_crypt
+      iscsi_tcp
+
+- name: Install apk packages linux-virt linux-virt-dev iptables
+  community.general.apk:
+    name: linux-virt,linux-virt-dev,iptables
+    update_cache: true
+    state: present
+  register: apk_add_linux_virt_iptables
+  until: apk_add_linux_virt_iptables is succeeded
+  retries: 8
+  delay: 5
+
+- name: Modprobe br_netfilter
+  command: /sbin/modprobe br_netfilter
+
+# Raise max open files for services started by OpenRC, including k3s-agent (containerd -> pods)
+- name: Set rc_ulimit to 524288 max open files for services started by OpenRC, including k3s-agent
+  lineinfile:
+    path: /etc/rc.conf
+    regexp: '^#rc_ulimit='
+    line: 'rc_ulimit="-n 524288 -Hn 524288"'
+
+- name: Set default_kernel_opts for cgroup v2
+  lineinfile:
+    path: /etc/update-extlinux.conf
+    regexp: '^default_kernel_opts='
+    line: 'default_kernel_opts="quiet rootfstype=ext4 cgroup_no_v1=all systemd.unified_cgroup_hierarchy=1 reboot=hard"'
+
+- name: Run update-extlinux to regenerate /boot/extlinux.conf
+  command: /sbin/update-extlinux
+
+- name: Enable service cgroups, and not touch the state
+  ansible.builtin.service:
+    name: cgroups
+    runlevel: default
+    enabled: yes
+
+- name: Reboot to apply cgroup v2 settings and kernel parameter changes
+  reboot:
+    msg: "Rebooting to enable cgroups v2"
+    connect_timeout: 10
+    reboot_timeout: 300
+    test_command: whoami
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Verify cgroups v2 is mounted
+  command: stat -fc %T /sys/fs/cgroup
+  register: cgroupfs_type
+  changed_when: false
+
+- name: Fail if cgroup v2 is not active
+  fail:
+    msg: "ERROR: cgroup v2 is not active on /sys/fs/cgroup"
+  when: '"cgroup2fs" not in cgroupfs_type.stdout and "UNKNOWN" not in cgroupfs_type.stdout'
+
+- name: Confirm cgroup.controllers exists
+  stat:
+    path: /sys/fs/cgroup/cgroup.controllers
+  register: cgctl
+
+- name: Fail if cgroup.controllers is missing (not cgroup v2)
+  fail:
+    msg: "ERROR: cgroup.controllers file is missing — cgroup v2 not mounted properly"
+  when: not cgctl.stat.exists

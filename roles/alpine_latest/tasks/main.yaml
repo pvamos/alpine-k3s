@@ -1,0 +1,41 @@
+---
+
+# Alpine linux latest stable APK repo configuration
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+- name: Set /etc/apk/repositories to latest-stable/main, latest-stable/community and #edge/testing
+  copy:
+    src:  files/repositories.latest
+    dest: /etc/apk/repositories
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: Upgrade all installed apk packages to the latest versions
+  community.general.apk:
+    upgrade: true
+    update_cache: true
+  register: apk_upgrade_update_cache
+  until: apk_upgrade_update_cache is succeeded
+  retries: 8
+  delay: 5
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: Pause for 5 seconds
+  ansible.builtin.pause:
+    seconds: 5
+
+- name: Reboot the host after apk upgrade
+  reboot:
+    msg: "Rebooting after apk upgrade"
+    connect_timeout: 15
+    reboot_timeout: 600
+    test_command: whoami
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+

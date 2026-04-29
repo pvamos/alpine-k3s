@@ -1,0 +1,501 @@
+---
+
+- name: Test connection with user {{ ansible_user }} on port {{ ansible_port }}
+  ping:
+
+
+- name: Set host variables for reg.example.com
+  set_fact:
+    fqdnfromip: "{{ reg_fqdn }}"
+    hostnamefromip: "{{ reg_hostname }}"
+    domainfromip: "{{ reg_domain }}"
+    ipv4addr: "{{ reg_ipv4addr }}"
+    ipv6addr: "{{ reg_ipv6addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ reg_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == reg_ipv4addr
+
+- name: Set host variables for k8s.example.com
+  set_fact:
+    fqdnfromip: "{{ api_fqdn }}"
+    hostnamefromip: "{{ api_hostname }}"
+    domainfromip: "{{ api_domain }}"
+    ipv4addr: "{{ api_ipv4addr }}"
+    ipv6addr: "{{ api_ipv6addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ api_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == api_ipv4addr
+
+# - name: Set host variables for mqtt.envsensor.net
+  # set_fact:
+    # fqdnfromip: "{{ mqtt_fqdn }}"
+    # hostnamefromip: "{{ mqtt_hostname }}"
+    # domainfromip: "{{ mqtt_domain }}"
+    # ipv4addr: "{{ mqtt_ipv4addr }}"
+    # ipv6addr: "{{ mqtt_ipv6addr }}"
+    # macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    # city: "{{ mqtt_city }}"
+  # when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == mqtt_ipv4addr
+
+- name: Set host variables for lb.example.com
+  set_fact:
+    fqdnfromip: "{{ lb1_fqdn }}"
+    hostnamefromip: "{{ lb1_hostname }}"
+    domainfromip: "{{ lb1_domain }}"
+    ipv4addr: "{{ lb1_ipv4addr }}"
+    ipv6addr: "{{ lb1_ipv6addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ lb1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == lb1_ipv4addr
+
+- name: Set host variables for control1.example.com
+  set_fact:
+    fqdnfromip: "{{ c1_fqdn }}"
+    hostnamefromip: "{{ c1_hostname }}"
+    domainfromip: "{{ c1_domain }}"
+    ipv4addr: "{{ c1_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c1_ipv4addr
+
+- name: Set host variables for control2.example.com
+  set_fact:
+    fqdnfromip: "{{ c2_fqdn }}"
+    hostnamefromip: "{{ c2_hostname }}"
+    domainfromip: "{{ c2_domain }}"
+    ipv4addr: "{{ c2_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c2_ipv4addr
+
+- name: Set host variables for control3.example.com
+  set_fact:
+    fqdnfromip: "{{ c3_fqdn }}"
+    hostnamefromip: "{{ c3_hostname }}"
+    domainfromip: "{{ c3_domain }}"
+    ipv4addr: "{{ c3_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ c3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == c3_ipv4addr
+
+- name: Set host variables for worker1.example.com
+  set_fact:
+    fqdnfromip: "{{ w1_fqdn }}"
+    hostnamefromip: "{{ w1_hostname }}"
+    domainfromip: "{{ w1_domain }}"
+    ipv4addr: "{{ w1_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w1_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w1_ipv4addr
+
+- name: Set host variables for worker2.example.com
+  set_fact:
+    fqdnfromip: "{{ w2_fqdn }}"
+    hostnamefromip: "{{ w2_hostname }}"
+    domainfromip: "{{ w2_domain }}"
+    ipv4addr: "{{ w2_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w2_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w2_ipv4addr
+
+- name: Set host variables for worker3.example.com
+  set_fact:
+    fqdnfromip: "{{ w3_fqdn }}"
+    hostnamefromip: "{{ w3_hostname }}"
+    domainfromip: "{{ w3_domain }}"
+    ipv4addr: "{{ w3_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w3_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w3_ipv4addr
+
+- name: Set host variables for worker4.example.com
+  set_fact:
+    fqdnfromip: "{{ w4_fqdn }}"
+    hostnamefromip: "{{ w4_hostname }}"
+    domainfromip: "{{ w4_domain }}"
+    ipv4addr: "{{ w4_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w4_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w4_ipv4addr
+
+- name: Set host variables for worker5.example.com
+  set_fact:
+    fqdnfromip: "{{ w5_fqdn }}"
+    hostnamefromip: "{{ w5_hostname }}"
+    domainfromip: "{{ w5_domain }}"
+    ipv4addr: "{{ w5_ipv4addr }}"
+    macaddress: "{{ hostvars[inventory_hostname].ansible_default_ipv4.macaddress }}"
+    city: "{{ w5_city }}"
+  when: hostvars[inventory_hostname].ansible_default_ipv4.address|default(ansible_all_ipv4_addresses[0]) == w5_ipv4addr
+
+- name: Print host variables
+  debug:
+    msg: "fqdnfromip: {{ fqdnfromip }} hostnamefromip: {{ hostnamefromip }} domainfromip: {{ domainfromip }} city: {{ city }} macaddress: {{ macaddress }} ipv4addr: {{ ipv4addr }}"
+
+- name: Initialialize control1 with get.k3s.io script
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --cluster-init --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  register: control1_output
+  when: inventory_hostname in groups.control1
+
+- name: Print control1 get.k3s.io script output
+  ansible.builtin.debug:
+    var: control1_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 30 seconds
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Initialialize control2 and control3 with get.k3s.io script
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | /bin/sh -s - server --server https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} --token {{ k3s_token }} --tls-san {{ loadbalancer_ipv4 }} --tls-san {{ loadbalancer_fqdn }} --tls-san {{ c1_ipv4addr }} --tls-san {{ c2_ipv4addr }} --tls-san {{ c3_ipv4addr }} --tls-san {{ c1_fqdn }} --tls-san {{ c2_fqdn }} --tls-san {{ c3_fqdn }} --tls-san 127.0.0.1 --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-backend={{ flannel_backend }} --flannel-iface {{ flannel_interface }}"
+  register: control23_output
+  when: inventory_hostname in groups.control23
+
+- name: Print control2 and control3 get.k3s.io script output
+  ansible.builtin.debug:
+    var: control23_output.stdout_lines
+  when: inventory_hostname in groups.control23
+
+- name: Pause for 30 seconds
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Initialialize workers with get.k3s.io script
+  ansible.builtin.raw: "export INSTALL_K3S_VERSION={{ k3s_version }} && /usr/bin/curl -sfL https://get.k3s.io | K3S_URL=https://{{ loadbalancer_ipv4 }}:{{ loadbalancer_port }} K3S_TOKEN={{ k3s_token }} /bin/sh -s - agent --node-name {{ hostnamefromip }} --node-ip {{ ipv4addr }} --flannel-iface {{ flannel_interface }}"
+  register: worker_output
+  when: inventory_hostname in groups.worker
+
+- name: Print output of get.k3s.io script from workers
+  ansible.builtin.debug:
+    var: worker_output.stdout_lines
+  when: inventory_hostname in groups.worker
+
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Ping
+  ping:
+
+- name: Copy /etc/rancher/k3s/k3s.yaml from control1 to controller workdir
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ ansible_controller_workdir }}/"
+    flat: true
+  when: inventory_hostname in groups.control1
+
+- name: Copy {{ ansible_controller_workdir }}/k3s.yaml from ansible host to {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.copy:
+    src: {{ ansible_controller_workdir }}/k3s.yaml
+    dest: {{ ansible_local_kubeconfig }}
+    remote_src: yes
+    owner: p
+    group: p
+    mode: '0600'
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Set loadbalancer IP in {{ ansible_controller_workdir }}/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_controller_workdir }}/k3s.yaml
+    regexp: '^    server: https://127.0.0.1:6443'
+    line: "    server: https://{{ loadbalancer_ipv4 }}:6443"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Set loadbalancer FQDN in {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_local_kubeconfig }}
+    regexp: '^    server: https://127.0.0.1:6443'
+    line: "    server: https://{{ loadbalancer_fqdn }}:6443"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context name with FQDN in {{ ansible_controller_workdir }}/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_controller_workdir }}/k3s.yaml
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context name with FQDN in {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_local_kubeconfig }}
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context cluster with FQDN in {{ ansible_controller_workdir }}/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_controller_workdir }}/k3s.yaml
+    regexp: '^    cluster: default'
+    line: "    cluster: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace context cluster with FQDN in {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_local_kubeconfig }}
+    regexp: '^    cluster: default'
+    line: "    cluster: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace cluster name with FQDN in {{ ansible_controller_workdir }}/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_controller_workdir }}/k3s.yaml
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace cluster name with FQDN in {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_local_kubeconfig }}
+    regexp: '^  name: default'
+    line: "  name: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace current-context with FQDN in {{ ansible_controller_workdir }}/k3s.yaml on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_controller_workdir }}/k3s.yaml
+    regexp: '^current-context: default'
+    line: "current-context: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Replace current-context with FQDN in {{ ansible_local_kubeconfig }} on ansible host
+  ansible.builtin.lineinfile:
+    path: {{ ansible_local_kubeconfig }}
+    regexp: '^current-context: default'
+    line: "current-context: {{ loadbalancer_fqdn }}"
+  when: inventory_hostname in groups.control1
+  delegate_to: 127.0.0.1
+
+- name: Copy the same {{ ansible_controller_workdir }}/k3s.yaml from ansible host to /etc/rancher/k3s/k3s.yaml on all nodes
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/k3s.yaml
+    src: {{ ansible_controller_workdir }}/k3s.yaml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes control1 control2 control3 svccontroller.k3s.cattle.io/enablelb=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane/NoSchedule
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane:NoSchedule --overwrite
+  register: kubectl_taint_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl taint nodes control1 control2 control3 node-role.kubernetes.io/control-plane/NoSchedule output
+  ansible.builtin.debug:
+    var: kubectl_taint_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Render traefik HelmChartConfig with trustedIPs to /var/lib/rancher/k3s/server/manifests/traefik-config.yaml on control nodes
+  ansible.builtin.template:
+    src: templates/traefik-config.yaml.j2
+    dest: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+    owner: root
+    group: root
+    mode: '0600'
+  when: inventory_hostname in groups.controlplane
+
+- name: Touch traefik-config.yaml to trigger k3s reapply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/traefik-config.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
+
+- name: Insert replicas - 2 if missing in metrics-server deployment
+  ansible.builtin.blockinfile:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    block: |
+      replicas: 2
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - REPLICAS"
+    insertafter: '^spec:\s*$'
+  when: inventory_hostname in groups.controlplane
+
+- name: Replace nodeSelector with control-plane label for metrics-server
+  ansible.builtin.replace:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    regexp: '^(\s*)nodeSelector:\s*\n\1\s*[^\n]+$'
+    replace: '\1nodeSelector:\n\1  node-role.kubernetes.io/control-plane: "true"'
+  when: inventory_hostname in groups.controlplane
+
+- name: Touch metrics-server file to re-trigger manifest apply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/metrics-server/metrics-server-deployment.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
+
+- name: Insert replicas - 2 if missing in coredns deployment
+  ansible.builtin.blockinfile:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    block: |
+      replicas: 2
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - REPLICAS"
+    insertafter: '^spec:\s*$'
+  when: inventory_hostname in groups.controlplane
+
+- name: Replace CoreDNS nodeSelector with control-plane only
+  ansible.builtin.replace:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    regexp: '^(\s*)kubernetes\.io/os:\s*linux$'
+    replace: '\1node-role.kubernetes.io/control-plane: "true"'
+  when: inventory_hostname in groups.controlplane
+
+- name: Touch CoreDNS manifest to trigger reapply
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/coredns.yaml
+    state: touch
+  when: inventory_hostname in groups.controlplane
+
+- name: Ensure CoreDNS PDB
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: coredns-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          k8s-app: kube-dns
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure CoreDNS PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Ensure Traefik PDB
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: traefik-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          app.kubernetes.io/name: traefik
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure Traefik PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Ensure Metrics Server PDB
+  ansible.builtin.shell: |
+    /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml apply -f - <<EOF
+    apiVersion: policy/v1
+    kind: PodDisruptionBudget
+    metadata:
+      name: metrics-server-pdb
+      namespace: kube-system
+    spec:
+      minAvailable: 1
+      selector:
+        matchLabels:
+          k8s-app: metrics-server
+    EOF
+  register: kubectl_apply_output
+  when: inventory_hostname in groups.control1
+
+- name: Print Ensure Metrics Server PDB output
+  ansible.builtin.debug:
+    var: kubectl_apply_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/worker=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Run kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true --overwrite
+  register: kubectl_label_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl label nodes worker1 worker2 worker3 worker4 worker5 node-role.kubernetes.io/kafka=true output
+  ansible.builtin.debug:
+    var: kubectl_label_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Pause for 10 seconds
+  ansible.builtin.pause:
+    seconds: 10
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: sync
+  ansible.builtin.raw: sync
+
+- name: Reboot to have a clean start with new configurations
+  reboot:
+    connect_timeout: 15
+    reboot_timeout: 600
+    test_command: whoami
+
+- name: Ping
+  ping:
+
+- name: Pause for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Ping
+  ping:
+
+- name: Get kubectl get no
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get no -owide
+  register: kubectl_getno_output
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get no output
+  ansible.builtin.debug:
+    var: kubectl_getno_output.stdout_lines
+  when: inventory_hostname in groups.control1
+
+- name: Get kubectl get pod --all-namespaces
+  ansible.builtin.command:
+    cmd: /usr/local/bin/kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml get pod --all-namespaces -owide
+  register: get_pods
+  when: inventory_hostname in groups.control1
+
+- name: Print kubectl get po --all-namespaces output
+  ansible.builtin.debug:
+    var: get_pods.stdout_lines
+  when: inventory_hostname in groups.control1

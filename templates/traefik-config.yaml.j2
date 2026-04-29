@@ -1,0 +1,31 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |
+    additionalArguments:
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      # Trust X-Forwarded-* only from the HAProxy VMs
+      - "--entryPoints.web.forwardedHeaders.trustedIPs={{ [haproxy_lb1, haproxy_api] | map('regex_replace','^(.*)$','\\1/32') | join(',') }}"
+      - "--entryPoints.websecure.forwardedHeaders.trustedIPs={{ [haproxy_lb1, haproxy_api] | map('regex_replace','^(.*)$','\\1/32') | join(',') }}"
+    dashboard:
+      enabled: true
+    deployment:
+      replicas: 2
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+    tolerations:
+      - key: "node-role.kubernetes.io/control-plane"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node-role.kubernetes.io/master"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
+    api:
+      dashboard: true
