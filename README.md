@@ -2,6 +2,8 @@
 
 [https://github.com/pvamos/alpine-k3s](https://github.com/pvamos/alpine-k3s)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884214.svg)](https://doi.org/10.5281/zenodo.22884214)
+
 Ansible automation for preparing **Alpine Linux** hosts and deploying a small **high-availability k3s Kubernetes cluster** with **Longhorn** storage.
 
 This repository is intended for bare VPS-style nodes where Alpine Linux is already installed and reachable over SSH. The playbook prepares the operating system, installs k3s, joins control-plane and worker nodes, configures core cluster components, and deploys Longhorn with custom StorageClasses.
@@ -907,14 +909,14 @@ kubectl get storageclass
 
 ## 📚 Citation and archival release
 
-This repository is being prepared as a versioned research-software artifact associated with the BSc thesis above.
+**v1.0.0** is archived in Zenodo as a version-specific research-software record.
 
+* **Version DOI:** [10.5281/zenodo.22884215](https://doi.org/10.5281/zenodo.22884215)
+* **All-versions DOI:** [10.5281/zenodo.22884214](https://doi.org/10.5281/zenodo.22884214)
 * `CITATION.cff` provides GitHub-compatible citation metadata.
-* `.zenodo.json` provides Zenodo-specific metadata and links this software to the thesis with `isSupplementTo`.
-* The planned first archival software release is **v1.0.0**.
-* After Zenodo mints the software DOI, add the DOI badge and DOI to this README and to `CITATION.cff` without creating a new software version solely for that metadata backlink.
+* `.zenodo.json` contains the Zenodo release metadata and links this software to the thesis with `isSupplementTo`.
 
-Until the software DOI exists, cite the thesis DOI and the repository URL.
+Use the **version DOI** when citing the exact `v1.0.0` release. The all-versions DOI resolves to the latest archived release of this software.
 
 ---
 
