@@ -165,8 +165,8 @@ api_city: Example-City
 lb1_fqdn: lb1.example.com
 lb1_hostname: k8s
 lb1_domain: example.com
-lb1_ipv4addr: 203.0.114.10
-lb1_ipv6addr: 2001:db9::10
+lb1_ipv4addr: 203.0.113.10
+lb1_ipv6addr: 2001:db8::10
 lb1_city: Example-City
 
 

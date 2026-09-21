@@ -20,6 +20,7 @@ This repository is intended for bare VPS-style nodes where Alpine Linux is alrea
 **Péter Vámos**
 
 * [https://github.com/pvamos](https://github.com/pvamos)
+* [ORCID: 0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
 * [https://linkedin.com/in/pvamos](https://linkedin.com/in/pvamos)
 * [pvamos@gmail.com](mailto:pvamos@gmail.com)
 
@@ -33,6 +34,14 @@ for the **Expert in Applied Environmental Studies BSc** program at **John Wesley
 The cluster is used as infrastructure for an environmental monitoring stack built around ESP32 sensor nodes,
 VerneMQ MQTT, Apache Kafka, Kafka Connect, Longhorn persistent storage,
 custom Erlang and Java based data-processing services, ClickHouse DB and Grafana.
+
+
+**Thesis:** *Környezeti paraméterek mérése a tudomány és technológia fejlődésének tükrében – Egy skálázható szenzorhálózat megvalósításának tanulságai*<br>
+**Thesis DOI:** [10.5281/zenodo.22843091](https://doi.org/10.5281/zenodo.22843091)<br>
+**Research project overview:** [environmental-sensor-network](https://github.com/pvamos/environmental-sensor-network)<br>
+**Author ORCID:** [0009-0004-8554-5014](https://orcid.org/0009-0004-8554-5014)
+
+This repository is one implementation component of the broader environmental sensor network. The project overview repository documents the end-to-end architecture, the role of each software component, research outputs, archival releases and reproducibility information.
 
 ---
 
@@ -893,6 +902,19 @@ Check Longhorn pods:
 kubectl get pods -n longhorn-system -o wide
 kubectl get storageclass
 ```
+
+---
+
+## 📚 Citation and archival release
+
+This repository is being prepared as a versioned research-software artifact associated with the BSc thesis above.
+
+* `CITATION.cff` provides GitHub-compatible citation metadata.
+* `.zenodo.json` provides Zenodo-specific metadata and links this software to the thesis with `isSupplementTo`.
+* The planned first archival software release is **v1.0.0**.
+* After Zenodo mints the software DOI, add the DOI badge and DOI to this README and to `CITATION.cff` without creating a new software version solely for that metadata backlink.
+
+Until the software DOI exists, cite the thesis DOI and the repository URL.
 
 ---
 
