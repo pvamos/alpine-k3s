@@ -1,0 +1,39 @@
+{
+  "creators": [
+    {
+      "name": "Vámos, Péter",
+      "orcid": "0009-0004-8554-5014",
+      "affiliation": "John Wesley Theological College, Budapest"
+    }
+  ],
+  "title": "Alpine k3s cluster automation for environmental monitoring",
+  "description": "Ansible automation for preparing Alpine Linux hosts and deploying the high-availability k3s and Longhorn infrastructure used by a scalable environmental sensor network.",
+  "version": "1.0.0",
+  "access_right": "open",
+  "license": "mit",
+  "upload_type": "software",
+  "language": "eng",
+  "keywords": [
+    "environmental monitoring",
+    "sensor network",
+    "Kubernetes",
+    "k3s",
+    "Alpine Linux",
+    "Ansible",
+    "Longhorn",
+    "infrastructure as code"
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "doi",
+      "identifier": "10.5281/zenodo.22843091",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-dissertation"
+    },
+    {
+      "scheme": "url",
+      "identifier": "https://github.com/pvamos/environmental-sensor-network",
+      "relation": "isPartOf"
+    }
+  ]
+}

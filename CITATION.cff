@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software in research, please cite the archived software release and the associated thesis."
+type: software
+authors:
+  - family-names: "Vámos"
+    given-names: "Péter"
+    orcid: "https://orcid.org/0009-0004-8554-5014"
+    affiliation: "John Wesley Theological College, Budapest"
+title: "Alpine k3s cluster automation for environmental monitoring"
+version: "1.0.0"
+repository-code: "https://github.com/pvamos/alpine-k3s"
+license: MIT
+keywords:
+  - "environmental monitoring"
+  - "sensor network"
+  - "Kubernetes"
+  - "k3s"
+  - "Alpine Linux"
+  - "Ansible"
+  - "Longhorn"
+  - "infrastructure as code"
+abstract: >-
+  Ansible automation for preparing Alpine Linux hosts and deploying the high-availability k3s and Longhorn infrastructure used by a scalable environmental sensor network.
